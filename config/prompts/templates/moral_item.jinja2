@@ -1,0 +1,13 @@
+{# SNAP Moral Item Template #}
+{# Variables: item, paraphrase, context, scale #}
+
+{% if context.prefix %}
+{{ context.prefix }}
+{% endif %}
+
+{{ paraphrase }}
+
+Please rate on the following scale:
+{{ scale }}
+
+Respond with ONLY a single number from 1 to 7.

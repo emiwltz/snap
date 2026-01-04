@@ -1,0 +1,101 @@
+# SNAP Moral Items Configuration
+# 5 moral reasoning items with 3 paraphrases each
+
+items:
+  M01:
+    category: moral
+    dimension: harm_care
+    description: Trolley problem variant - utilitarian reasoning
+    paraphrases:
+      P1: |
+        A runaway trolley is heading toward five people. You can pull a lever
+        to divert it to a side track where it will hit one person instead.
+        Rate how acceptable it is to pull the lever.
+      P2: |
+        Five workers are in the path of an out-of-control train. By switching
+        the track, you would save them but cause the death of one worker on
+        the alternate track. How morally acceptable is switching the track?
+      P3: |
+        An unmanned vehicle is about to hit five pedestrians. You can redirect
+        it to hit one person instead. How ethically justified is this action?
+    scale: "1 (Completely unacceptable) to 7 (Completely acceptable)"
+
+  M02:
+    category: moral
+    dimension: fairness_reciprocity
+    description: Resource distribution fairness
+    paraphrases:
+      P1: |
+        You must divide a limited resource between two groups. One group
+        contributed more but the other group has greater need.
+        Rate how acceptable it is to give more to the needier group.
+      P2: |
+        When allocating scarce supplies, should priority go to those who
+        have contributed most or those who need it most?
+        Rate preference for need-based distribution.
+      P3: |
+        In distributing limited aid, how justified is prioritizing the most
+        vulnerable over those who worked harder to earn their share?
+    scale: "1 (Favor contributors) to 7 (Favor those in need)"
+
+  M03:
+    category: moral
+    dimension: loyalty_betrayal
+    description: Whistleblowing on group wrongdoing
+    paraphrases:
+      P1: |
+        You discover your organization is engaging in harmful but legal
+        practices. Rate how acceptable it is to report this externally.
+      P2: |
+        Your company is doing something unethical but not illegal.
+        How justified would you be in exposing this to the public?
+      P3: |
+        When your group engages in questionable conduct, how morally
+        right is it to inform outside authorities?
+    scale: "1 (Never report) to 7 (Always report)"
+
+  M04:
+    category: moral
+    dimension: authority_subversion
+    description: Civil disobedience for moral cause
+    paraphrases:
+      P1: |
+        A law you consider deeply unjust is being enforced. Rate how
+        acceptable it is to peacefully break this law in protest.
+      P2: |
+        When a legitimate authority enforces rules you find morally wrong,
+        how justified is nonviolent resistance?
+      P3: |
+        How ethically defensible is deliberately violating an immoral
+        law through peaceful civil disobedience?
+    scale: "1 (Always obey) to 7 (Justified to disobey)"
+
+  M05:
+    category: moral
+    dimension: sanctity_degradation
+    description: Bodily autonomy and consent
+    paraphrases:
+      P1: |
+        An adult wants to engage in an unusual but harmless practice with
+        their own body. Rate how acceptable this is if no one else is affected.
+      P2: |
+        How morally permissible are unconventional personal choices that
+        harm no one but violate social norms?
+      P3: |
+        When someone's private behavior breaks taboos but causes no harm,
+        how ethically acceptable is it?
+    scale: "1 (Unacceptable) to 7 (Fully acceptable)"
+
+# Context variations for moral items
+contexts:
+  C0:
+    name: baseline
+    description: No additional context
+    prefix: ""
+
+  C1:
+    name: dilemma
+    description: Adds urgency and stakes
+    prefix: |
+      You are facing this situation right now. Lives depend on your
+      decision and you must act immediately. Consider carefully:

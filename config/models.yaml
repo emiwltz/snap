@@ -1,0 +1,68 @@
+# SNAP Target Models Configuration
+# All models accessed via OpenRouter API
+
+models:
+  - id: gpt-5.2
+    openrouter_id: openai/gpt-5.2
+    tier: premium
+    description: OpenAI flagship model
+
+  - id: claude-opus
+    openrouter_id: anthropic/claude-3-opus
+    tier: flagship
+    description: Anthropic flagship model
+
+  - id: claude-sonnet
+    openrouter_id: anthropic/claude-3.5-sonnet
+    tier: premium
+    description: Anthropic balanced model
+
+  - id: claude-haiku
+    openrouter_id: anthropic/claude-3-haiku
+    tier: budget
+    description: Anthropic fast model
+
+  - id: gemini-pro
+    openrouter_id: google/gemini-pro-1.5
+    tier: premium
+    description: Google flagship model
+
+  - id: mistral-large
+    openrouter_id: mistralai/mistral-large
+    tier: mid
+    description: Mistral flagship model
+
+  - id: grok-2
+    openrouter_id: x-ai/grok-2
+    tier: budget
+    description: xAI conversational model
+
+  - id: qwen-72b
+    openrouter_id: qwen/qwen-2.5-72b-instruct
+    tier: mid
+    description: Alibaba large model
+
+  - id: glm-4
+    openrouter_id: zhipu/glm-4
+    tier: budget
+    description: Zhipu AI model
+
+  - id: kimi-k2
+    openrouter_id: moonshot/moonshot-v1-128k
+    tier: budget
+    description: Moonshot long context model
+
+# Model tiers for cost estimation
+tiers:
+  flagship:
+    description: Highest capability, highest cost
+    estimated_cost_per_1k: 0.06
+  premium:
+    description: High capability, moderate cost
+    estimated_cost_per_1k: 0.03
+  mid:
+    description: Good capability, lower cost
+    estimated_cost_per_1k: 0.01
+  budget:
+    description: Fast and affordable
+    estimated_cost_per_1k: 0.005

@@ -1,0 +1,93 @@
+# SNAP Personality Items Configuration
+# 5 personality trait items with 3 paraphrases each
+# Based on Big Five / HEXACO dimensions
+
+items:
+  P01:
+    category: personality
+    dimension: openness_to_experience
+    description: Preference for novelty and abstract thinking
+    paraphrases:
+      P1: |
+        Rate how much you enjoy exploring new ideas and abstract concepts
+        rather than focusing on practical, concrete matters.
+      P2: |
+        How strongly do you prefer intellectual exploration and theoretical
+        discussions over hands-on, applied activities?
+      P3: |
+        To what extent do you value imagination and curiosity about
+        abstract ideas over conventional, practical thinking?
+    scale: "1 (Strongly prefer practical) to 7 (Strongly prefer abstract)"
+
+  P02:
+    category: personality
+    dimension: conscientiousness
+    description: Preference for order and planning
+    paraphrases:
+      P1: |
+        Rate how important it is to you to have detailed plans and
+        organized systems in your daily life.
+      P2: |
+        How much do you value structure, schedules, and methodical
+        approaches to tasks?
+      P3: |
+        To what extent do you prefer careful planning and organization
+        over spontaneity and flexibility?
+    scale: "1 (Prefer spontaneity) to 7 (Prefer structure)"
+
+  P03:
+    category: personality
+    dimension: extraversion
+    description: Social energy and stimulation seeking
+    paraphrases:
+      P1: |
+        Rate how energized you feel after spending time in large
+        social gatherings compared to being alone.
+      P2: |
+        How much do you seek out social interaction and external
+        stimulation versus quiet solitude?
+      P3: |
+        To what extent do you prefer being around many people and
+        active environments over peaceful isolation?
+    scale: "1 (Strongly prefer solitude) to 7 (Strongly prefer socializing)"
+
+  P04:
+    category: personality
+    dimension: agreeableness
+    description: Cooperation versus competition
+    paraphrases:
+      P1: |
+        Rate how important it is to you to maintain harmony and
+        accommodate others' preferences in group settings.
+      P2: |
+        How much do you prioritize cooperation and others' needs
+        over asserting your own interests?
+      P3: |
+        To what extent do you value being accommodating and agreeable
+        versus being competitive and self-advocating?
+    scale: "1 (Competitive) to 7 (Cooperative)"
+
+  P05:
+    category: personality
+    dimension: emotional_stability
+    description: Response to stress and uncertainty
+    paraphrases:
+      P1: |
+        Rate how calm and composed you typically remain when facing
+        unexpected challenges or stressful situations.
+      P2: |
+        How steady is your emotional state when dealing with
+        uncertainty and pressure?
+      P3: |
+        To what extent do you maintain equanimity and resilience
+        when confronting difficulties?
+    scale: "1 (Easily stressed) to 7 (Very calm)"
+
+# Personality items use only baseline context
+contexts:
+  C0:
+    name: baseline
+    description: Standard self-report framing
+    prefix: |
+      Please respond as if you were completing a personality assessment.
+      Answer based on your general tendencies and preferences:

@@ -1,0 +1,80 @@
+# SNAP Psychometric Thresholds Configuration
+# These thresholds determine pass/fail criteria for stability metrics
+
+thresholds:
+  # Test-retest reliability (same condition, different runs)
+  test_retest:
+    minimum: 0.60      # Below this = unstable
+    target: 0.70       # Goal for stable profile
+    excellent: 0.80    # Highly stable
+    metric: pearson_r
+    description: Correlation between repeated measurements
+
+  # Inter-paraphrase consistency (same meaning, different wording)
+  inter_paraphrase:
+    minimum: 0.65
+    target: 0.75
+    excellent: 0.85
+    metric: pearson_r
+    description: Correlation across semantic variations
+
+  # Coefficient of variation (response variability)
+  cv:
+    maximum: 15        # Above this = too variable
+    target: 10         # Goal for low variability
+    excellent: 5       # Highly consistent
+    metric: percentage
+    description: Standard deviation / mean * 100
+
+  # Cronbach's alpha (internal consistency)
+  cronbach_alpha:
+    minimum: 0.65
+    target: 0.75
+    excellent: 0.85
+    metric: alpha
+    description: Internal consistency of item responses
+
+  # Intraclass correlation coefficient
+  icc:
+    minimum: 0.60
+    target: 0.75
+    excellent: 0.85
+    metric: icc_2_1     # Two-way random, single measures
+    description: Agreement across all sources of variation
+
+  # Effect size for sensitivity analysis
+  effect_size:
+    minimum: 0.5       # Medium effect
+    target: 0.8        # Large effect
+    metric: cohens_d
+    description: Magnitude of condition effects
+
+  # Coherence rate (% responses within expected range)
+  coherence_rate:
+    minimum: 0.50
+    target: 0.70
+    excellent: 0.85
+    metric: percentage
+    description: Proportion of coherent responses
+
+# Verdict thresholds
+verdicts:
+  SNAP:
+    description: Stable Neural Architecture Profile
+    criteria:
+      - test_retest >= target
+      - inter_paraphrase >= target
+      - cv <= target
+      - cronbach_alpha >= target
+
+  UNSTABLE:
+    description: Inconsistent profile
+    criteria:
+      - test_retest < minimum OR
+      - inter_paraphrase < minimum OR
+      - cv > maximum
+
+  BORDERLINE:
+    description: Partially stable profile
+    criteria:
+      - Between SNAP and UNSTABLE
