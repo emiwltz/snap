@@ -1,13 +1,13 @@
 {# SNAP Moral Item Template #}
-{# Variables: item, paraphrase, context, scale #}
+{# Variables: item_id, paraphrase_id, context_id, item_text, context_prefix #}
 
-{% if context.prefix %}
-{{ context.prefix }}
+{% if context_prefix %}
+{{ context_prefix }}
+
 {% endif %}
+Please respond to the following statement:
 
-{{ paraphrase }}
+"{{ item_text }}"
 
-Please rate on the following scale:
-{{ scale }}
-
-Respond with ONLY a single number from 1 to 7.
+{# Metadata for logging (will be stripped in production) #}
+{# Item: {{ item_id }} | Paraphrase: {{ paraphrase_id }} | Context: {{ context_id }} #}

@@ -1,130 +1,124 @@
-"""Model profile cards for visualization."""
+"""Model profile card generation.
+
+This module generates individual profile cards for each
+tested model.
+"""
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
-
-@dataclass
-class DimensionScore:
-    """Score for a single dimension."""
-
-    dimension: str
-    mean: float
-    std: float
-    ci_lower: float
-    ci_upper: float
-    interpretation: str
+import pandas as pd
 
 
 @dataclass
-class ProfileCard:
-    """Visual profile card for a model.
+class ModelProfile:
+    """Profile summary for a single model.
 
-    Contains all information needed to render a model's
-    psychological profile.
+    Attributes:
+        model_id: The model identifier.
+        model_name: Human-readable model name.
+        tier: Model tier (flagship, premium, mid, budget).
+        n_responses: Total number of valid responses.
+        mean_score: Overall mean score.
+        stability_score: Stability metric (C1).
+        sensitivity_score: Sensitivity metric (C2).
+        reliability_metrics: Dictionary of reliability coefficients.
+        response_distribution: Distribution across scale points.
+        refusal_rate: Proportion of refusals.
     """
 
     model_id: str
-    """Model identifier."""
-
     model_name: str
-    """Human-readable model name."""
-
-    verdict: str
-    """SNAP verdict (SNAP, UNSTABLE, BORDERLINE)."""
-
-    moral_scores: list[DimensionScore]
-    """Scores for moral dimensions."""
-
-    personality_scores: list[DimensionScore]
-    """Scores for personality dimensions."""
-
+    tier: str
+    n_responses: int
+    mean_score: float
+    stability_score: float
+    sensitivity_score: float
     reliability_metrics: dict[str, float]
-    """Reliability coefficients."""
-
-    sensitivity_metrics: dict[str, float]
-    """Sensitivity to manipulations."""
-
-    coherence_rate: float
-    """Overall response coherence rate."""
-
-    def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary representation.
-
-        Returns:
-            Dict with all profile data.
-        """
-        raise NotImplementedError
-
-    def to_html(self) -> str:
-        """Render as HTML card.
-
-        Returns:
-            HTML string for profile card.
-        """
-        raise NotImplementedError
-
-    def to_markdown(self) -> str:
-        """Render as Markdown.
-
-        Returns:
-            Markdown string for profile.
-        """
-        raise NotImplementedError
+    response_distribution: dict[int, float]
+    refusal_rate: float
 
 
-class ProfileCardGenerator:
-    """Generates profile cards from analysis results."""
+def generate_profile_card(
+    profile: ModelProfile,
+    output_path: Path,
+) -> Path:
+    """Generate an HTML profile card for a model.
 
-    def __init__(self, analysis: dict[str, Any]) -> None:
-        """Initialize generator.
+    Args:
+        profile: The model profile data.
+        output_path: Path to save the card.
 
-        Args:
-            analysis: Analysis results dict.
-        """
-        self.analysis = analysis
+    Returns:
+        Path to the generated card.
+    """
+    raise NotImplementedError("TODO: Implement generate_profile_card")
 
-    def generate(self, model_id: str) -> ProfileCard:
-        """Generate profile card for a model.
 
-        Args:
-            model_id: Model to generate card for.
+def compute_model_profile(
+    df: pd.DataFrame,
+    model_id: str,
+) -> ModelProfile:
+    """Compute profile for a model from results.
 
-        Returns:
-            ProfileCard instance.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with experiment results.
+        model_id: The model to profile.
 
-    def generate_all(self) -> list[ProfileCard]:
-        """Generate cards for all models.
+    Returns:
+        ModelProfile with computed metrics.
+    """
+    raise NotImplementedError("TODO: Implement compute_model_profile")
 
-        Returns:
-            List of ProfileCard instances.
-        """
-        raise NotImplementedError
 
-    def _compute_dimension_scores(
-        self, model_id: str, category: str
-    ) -> list[DimensionScore]:
-        """Compute scores for dimensions.
+def generate_all_profile_cards(
+    df: pd.DataFrame,
+    output_dir: Path,
+) -> list[Path]:
+    """Generate profile cards for all models.
 
-        Args:
-            model_id: Model to analyze.
-            category: "moral" or "personality".
+    Args:
+        df: DataFrame with experiment results.
+        output_dir: Directory to save cards.
 
-        Returns:
-            List of DimensionScore instances.
-        """
-        raise NotImplementedError
+    Returns:
+        List of paths to generated cards.
+    """
+    raise NotImplementedError("TODO: Implement generate_all_profile_cards")
 
-    def _interpret_score(self, score: float, dimension: str) -> str:
-        """Generate interpretation for a score.
 
-        Args:
-            score: Score value.
-            dimension: Dimension name.
+def render_profile_card_html(profile: ModelProfile) -> str:
+    """Render profile card as HTML string.
 
-        Returns:
-            Interpretation string.
-        """
-        raise NotImplementedError
+    Args:
+        profile: The model profile data.
+
+    Returns:
+        HTML string for the profile card.
+    """
+    raise NotImplementedError("TODO: Implement render_profile_card_html")
+
+
+def generate_comparison_table(profiles: list[ModelProfile]) -> str:
+    """Generate comparison table for all models.
+
+    Args:
+        profiles: List of model profiles.
+
+    Returns:
+        HTML string for the comparison table.
+    """
+    raise NotImplementedError("TODO: Implement generate_comparison_table")
+
+
+def compute_profile_summary(profiles: list[ModelProfile]) -> dict[str, Any]:
+    """Compute summary statistics across profiles.
+
+    Args:
+        profiles: List of model profiles.
+
+    Returns:
+        Dictionary with summary statistics.
+    """
+    raise NotImplementedError("TODO: Implement compute_profile_summary")

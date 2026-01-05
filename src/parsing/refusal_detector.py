@@ -1,104 +1,107 @@
-"""Detection and classification of model refusals."""
+"""Refusal detection for LLM responses.
+
+This module identifies when an LLM refuses to provide
+a valid response.
+"""
 
 from dataclasses import dataclass
 from enum import Enum
 
 
 class RefusalCategory(Enum):
-    """Categories of model refusal."""
+    """Categories of refusal responses.
 
-    NONE = "none"  # Not a refusal
-    ETHICAL = "ethical"  # Refuses on ethical grounds
-    CAPABILITY = "capability"  # Claims inability
-    CLARIFICATION = "clarification"  # Asks for more info
-    DEFLECTION = "deflection"  # Redirects without answering
-    SAFETY = "safety"  # Safety/content policy
-    OTHER = "other"  # Unclassified refusal
+    Attributes:
+        EXPLICIT: Direct refusal to answer.
+        HEDGING: Excessive hedging without commitment.
+        ETHICAL: Refusal based on ethical concerns.
+        SCOPE: Claims the question is out of scope.
+        INVALID: Response doesn't match expected format.
+        TIMEOUT: API timeout or error.
+    """
+
+    EXPLICIT = "explicit"
+    HEDGING = "hedging"
+    ETHICAL = "ethical"
+    SCOPE = "scope"
+    INVALID = "invalid"
+    TIMEOUT = "timeout"
 
 
 @dataclass
 class RefusalResult:
-    """Result of refusal detection."""
+    """Result of refusal detection.
 
-    is_refusal: bool
-    """Whether the response is a refusal."""
-
-    category: RefusalCategory
-    """Category of refusal."""
-
-    confidence: float
-    """Confidence score (0-1)."""
-
-    matched_pattern: str | None = None
-    """Pattern that triggered detection."""
-
-
-class RefusalDetector:
-    """Detects and classifies model refusals.
-
-    Uses pattern matching and heuristics to identify when a model
-    has refused to provide a Likert rating.
+    Attributes:
+        is_refusal: Whether the response is a refusal.
+        category: The category of refusal, if any.
+        confidence: Confidence in the detection (0.0-1.0).
+        indicators: List of detected refusal indicators.
     """
 
-    # Common refusal patterns
-    ETHICAL_PATTERNS: list[str] = [
-        r"cannot.*ethic",
-        r"not.*comfortable",
-        r"inappropriate",
-        r"decline.*answer",
-    ]
+    is_refusal: bool
+    category: RefusalCategory | None
+    confidence: float
+    indicators: list[str]
 
-    CAPABILITY_PATTERNS: list[str] = [
-        r"(as an? )?ai",
-        r"cannot.*have.*opinion",
-        r"don't.*have.*preference",
-        r"not.*capable",
-    ]
 
-    CLARIFICATION_PATTERNS: list[str] = [
-        r"could you.*clarify",
-        r"more.*context",
-        r"what do you mean",
-        r"depends on",
-    ]
+# Keywords that indicate refusal
+REFUSAL_KEYWORDS: list[str] = [
+    "cannot provide",
+    "unable to",
+    "i cannot",
+    "i won't",
+    "i will not",
+    "i'm not able",
+    "not appropriate",
+    "decline to",
+    "refuse to",
+]
 
-    def __init__(self) -> None:
-        """Initialize refusal detector."""
-        self._compiled_patterns: dict[RefusalCategory, list[object]] = {}
+HEDGING_KEYWORDS: list[str] = [
+    "it depends",
+    "context matters",
+    "too complex",
+    "cannot be answered",
+    "no single answer",
+]
 
-    def detect(self, response: str) -> RefusalResult:
-        """Detect if response is a refusal.
 
-        Args:
-            response: LLM response text.
+def detect_refusal(response: str) -> RefusalResult:
+    """Detect if a response is a refusal.
 
-        Returns:
-            RefusalResult with classification.
-        """
-        raise NotImplementedError
+    Analyzes the response text for refusal patterns
+    and categorizes the type of refusal.
 
-    def _check_patterns(
-        self, response: str, category: RefusalCategory
-    ) -> tuple[bool, str | None, float]:
-        """Check response against patterns for a category.
+    Args:
+        response: The raw response text.
 
-        Args:
-            response: Response text.
-            category: Refusal category to check.
+    Returns:
+        RefusalResult with detection information.
+    """
+    raise NotImplementedError("TODO: Implement detect_refusal")
 
-        Returns:
-            Tuple of (matched, pattern, confidence).
-        """
-        raise NotImplementedError
 
-    def _compute_confidence(self, response: str, matches: int) -> float:
-        """Compute confidence score.
+def classify_refusal(response: str, indicators: list[str]) -> RefusalCategory:
+    """Classify a refusal into a category.
 
-        Args:
-            response: Response text.
-            matches: Number of pattern matches.
+    Args:
+        response: The raw response text.
+        indicators: List of detected refusal indicators.
 
-        Returns:
-            Confidence score 0-1.
-        """
-        raise NotImplementedError
+    Returns:
+        The refusal category.
+    """
+    raise NotImplementedError("TODO: Implement classify_refusal")
+
+
+def get_refusal_code(category: RefusalCategory) -> int:
+    """Get the numeric code for a refusal category.
+
+    Args:
+        category: The refusal category.
+
+    Returns:
+        Numeric code (-1 for explicit, -2 for invalid, -3 for timeout).
+    """
+    raise NotImplementedError("TODO: Implement get_refusal_code")

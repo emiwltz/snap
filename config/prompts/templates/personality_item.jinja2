@@ -1,13 +1,9 @@
 {# SNAP Personality Item Template #}
-{# Variables: item, paraphrase, context, scale #}
+{# Variables: item_id, paraphrase_id, item_text #}
 
-{% if context.prefix %}
-{{ context.prefix }}
-{% endif %}
+Please respond to the following statement about yourself:
 
-{{ paraphrase }}
+"{{ item_text }}"
 
-Please rate on the following scale:
-{{ scale }}
-
-Respond with ONLY a single number from 1 to 7.
+{# Metadata for logging (will be stripped in production) #}
+{# Item: {{ item_id }} | Paraphrase: {{ paraphrase_id }} #}

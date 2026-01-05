@@ -1,7 +1,10 @@
-"""Reliability analysis (Cronbach's alpha, ICC, test-retest)."""
+"""Reliability analysis for SNAP data.
+
+This module provides functions for computing psychometric
+reliability coefficients.
+"""
 
 from dataclasses import dataclass
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -9,131 +12,123 @@ import pandas as pd
 
 @dataclass
 class ReliabilityResult:
-    """Result of reliability analysis."""
+    """Results from reliability analysis.
 
-    coefficient: float
-    """Reliability coefficient value."""
-
-    ci_lower: float
-    """95% CI lower bound."""
-
-    ci_upper: float
-    """95% CI upper bound."""
-
-    metric_name: str
-    """Name of the reliability metric."""
-
-    n_items: int
-    """Number of items/measurements."""
-
-    interpretation: str
-    """Qualitative interpretation."""
-
-
-class ReliabilityAnalyzer:
-    """Computes reliability metrics for SNAP experiment.
-
-    Implements various psychometric reliability measures.
+    Attributes:
+        coefficient: The reliability coefficient value.
+        ci_lower: Lower bound of 95% confidence interval.
+        ci_upper: Upper bound of 95% confidence interval.
+        n: Number of observations.
+        interpretation: Qualitative interpretation.
     """
 
-    def __init__(self, results: pd.DataFrame) -> None:
-        """Initialize analyzer with results.
+    coefficient: float
+    ci_lower: float
+    ci_upper: float
+    n: int
+    interpretation: str
 
-        Args:
-            results: DataFrame with experiment results.
-        """
-        self.results = results
 
-    def cronbach_alpha(
-        self, items: list[str], model_id: str | None = None
-    ) -> ReliabilityResult:
-        """Compute Cronbach's alpha for internal consistency.
+def compute_test_retest(
+    scores_t1: np.ndarray,
+    scores_t2: np.ndarray,
+) -> ReliabilityResult:
+    """Compute test-retest reliability.
 
-        Args:
-            items: List of item IDs to include.
-            model_id: Optional model to filter by.
+    Calculates Pearson correlation between repeated measurements.
 
-        Returns:
-            ReliabilityResult with alpha coefficient.
-        """
-        raise NotImplementedError
+    Args:
+        scores_t1: Scores from first measurement.
+        scores_t2: Scores from second measurement.
 
-    def test_retest(
-        self, model_id: str, run1: int = 1, run2: int = 2
-    ) -> ReliabilityResult:
-        """Compute test-retest reliability.
+    Returns:
+        ReliabilityResult with correlation coefficient.
+    """
+    raise NotImplementedError("TODO: Implement compute_test_retest")
 
-        Args:
-            model_id: Model to analyze.
-            run1: First run number.
-            run2: Second run number.
 
-        Returns:
-            ReliabilityResult with correlation coefficient.
-        """
-        raise NotImplementedError
+def compute_cronbach_alpha(scores_matrix: np.ndarray) -> ReliabilityResult:
+    """Compute Cronbach's alpha for internal consistency.
 
-    def inter_paraphrase(
-        self, model_id: str, item_id: str
-    ) -> ReliabilityResult:
-        """Compute inter-paraphrase correlation.
+    Args:
+        scores_matrix: Matrix of items x observations.
 
-        Args:
-            model_id: Model to analyze.
-            item_id: Item to analyze.
+    Returns:
+        ReliabilityResult with alpha coefficient.
+    """
+    raise NotImplementedError("TODO: Implement compute_cronbach_alpha")
 
-        Returns:
-            ReliabilityResult with correlation.
-        """
-        raise NotImplementedError
 
-    def icc(
-        self, model_id: str, icc_type: str = "ICC(2,1)"
-    ) -> ReliabilityResult:
-        """Compute Intraclass Correlation Coefficient.
+def compute_icc(
+    scores_matrix: np.ndarray,
+    icc_type: str = "ICC(2,1)",
+) -> ReliabilityResult:
+    """Compute intraclass correlation coefficient.
 
-        Args:
-            model_id: Model to analyze.
-            icc_type: Type of ICC (ICC(1,1), ICC(2,1), ICC(3,1)).
+    Args:
+        scores_matrix: Matrix of raters/runs x subjects.
+        icc_type: Type of ICC to compute (e.g., "ICC(2,1)", "ICC(3,k)").
 
-        Returns:
-            ReliabilityResult with ICC.
-        """
-        raise NotImplementedError
+    Returns:
+        ReliabilityResult with ICC value.
+    """
+    raise NotImplementedError("TODO: Implement compute_icc")
 
-    def split_half(
-        self, model_id: str, method: str = "odd_even"
-    ) -> ReliabilityResult:
-        """Compute split-half reliability.
 
-        Args:
-            model_id: Model to analyze.
-            method: Split method (odd_even, random, first_second).
+def compute_inter_paraphrase_reliability(
+    df: pd.DataFrame,
+    model: str,
+) -> ReliabilityResult:
+    """Compute inter-paraphrase reliability for a model.
 
-        Returns:
-            ReliabilityResult with Spearman-Brown corrected coefficient.
-        """
-        raise NotImplementedError
+    Measures consistency across semantically equivalent items.
 
-    @staticmethod
-    def interpret_reliability(coefficient: float) -> str:
-        """Interpret reliability coefficient.
+    Args:
+        df: DataFrame with experimental data.
+        model: Model ID to analyze.
 
-        Args:
-            coefficient: Reliability value.
+    Returns:
+        ReliabilityResult with correlation coefficient.
+    """
+    raise NotImplementedError("TODO: Implement compute_inter_paraphrase_reliability")
 
-        Returns:
-            Qualitative interpretation string.
-        """
-        if coefficient >= 0.9:
-            return "excellent"
-        elif coefficient >= 0.8:
-            return "good"
-        elif coefficient >= 0.7:
-            return "acceptable"
-        elif coefficient >= 0.6:
-            return "questionable"
-        elif coefficient >= 0.5:
-            return "poor"
-        else:
-            return "unacceptable"
+
+def compute_split_half_reliability(
+    scores: np.ndarray,
+    method: str = "odd_even",
+) -> ReliabilityResult:
+    """Compute split-half reliability.
+
+    Args:
+        scores: Array of item scores.
+        method: Split method ("odd_even", "random", "first_half").
+
+    Returns:
+        ReliabilityResult with Spearman-Brown corrected coefficient.
+    """
+    raise NotImplementedError("TODO: Implement compute_split_half_reliability")
+
+
+def interpret_reliability(coefficient: float) -> str:
+    """Interpret a reliability coefficient.
+
+    Args:
+        coefficient: The reliability coefficient.
+
+    Returns:
+        Qualitative interpretation string.
+    """
+    raise NotImplementedError("TODO: Implement interpret_reliability")
+
+
+def compute_sem(reliability: float, std: float) -> float:
+    """Compute standard error of measurement.
+
+    Args:
+        reliability: Reliability coefficient.
+        std: Standard deviation of scores.
+
+    Returns:
+        Standard error of measurement.
+    """
+    raise NotImplementedError("TODO: Implement compute_sem")

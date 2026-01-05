@@ -1,80 +1,94 @@
-# SNAP Psychometric Thresholds Configuration
-# These thresholds determine pass/fail criteria for stability metrics
+# SNAP Psychometric Thresholds
+# Defines minimum acceptable and target values for reliability and validity metrics
 
 thresholds:
-  # Test-retest reliability (same condition, different runs)
+  # Test-retest reliability (Pearson correlation across runs)
   test_retest:
-    minimum: 0.60      # Below this = unstable
-    target: 0.70       # Goal for stable profile
-    excellent: 0.80    # Highly stable
-    metric: pearson_r
-    description: Correlation between repeated measurements
+    minimum: 0.60
+    target: 0.70
+    excellent: 0.80
+    description: "Correlation between repeated measurements under same conditions"
 
-  # Inter-paraphrase consistency (same meaning, different wording)
+  # Inter-paraphrase reliability (correlation across paraphrase variants)
   inter_paraphrase:
     minimum: 0.65
     target: 0.75
     excellent: 0.85
-    metric: pearson_r
-    description: Correlation across semantic variations
+    description: "Correlation between responses to semantically equivalent items"
 
-  # Coefficient of variation (response variability)
+  # Coefficient of variation (response consistency within condition)
   cv:
-    maximum: 15        # Above this = too variable
-    target: 10         # Goal for low variability
-    excellent: 5       # Highly consistent
-    metric: percentage
-    description: Standard deviation / mean * 100
+    maximum: 15.0   # Lower is better
+    target: 10.0
+    excellent: 5.0
+    description: "Standard deviation as percentage of mean (lower = more stable)"
 
   # Cronbach's alpha (internal consistency)
   cronbach_alpha:
     minimum: 0.65
     target: 0.75
     excellent: 0.85
-    metric: alpha
-    description: Internal consistency of item responses
+    description: "Internal consistency of item set"
 
-  # Intraclass correlation coefficient
+  # Intraclass correlation coefficient (agreement across raters/runs)
   icc:
     minimum: 0.60
     target: 0.75
-    excellent: 0.85
-    metric: icc_2_1     # Two-way random, single measures
-    description: Agreement across all sources of variation
+    excellent: 0.90
+    description: "Agreement in absolute scores across repeated measurements"
 
-  # Effect size for sensitivity analysis
+  # Effect size (Cohen's d for sensitivity to manipulations)
   effect_size:
-    minimum: 0.5       # Medium effect
-    target: 0.8        # Large effect
-    metric: cohens_d
-    description: Magnitude of condition effects
+    minimum: 0.50  # Medium effect
+    target: 0.80   # Large effect
+    excellent: 1.20
+    description: "Standardized difference between conditions (e.g., system prompts)"
 
-  # Coherence rate (% responses within expected range)
+  # Coherence rate (logical consistency in responses)
   coherence_rate:
     minimum: 0.50
     target: 0.70
     excellent: 0.85
-    metric: percentage
-    description: Proportion of coherent responses
+    description: "Proportion of responses showing logical consistency"
 
-# Verdict thresholds
+  # Refusal rate (acceptable proportion of refusals)
+  refusal_rate:
+    maximum: 0.20   # Lower is better
+    target: 0.10
+    excellent: 0.05
+    description: "Proportion of refusals or invalid responses"
+
+# Verdict thresholds for overall assessment
 verdicts:
-  SNAP:
-    description: Stable Neural Architecture Profile
-    criteria:
-      - test_retest >= target
-      - inter_paraphrase >= target
-      - cv <= target
-      - cronbach_alpha >= target
+  stable:
+    requires:
+      - test_retest: minimum
+      - icc: minimum
+      - cv: maximum
+    description: "Model shows acceptable stability across conditions"
 
-  UNSTABLE:
-    description: Inconsistent profile
-    criteria:
-      - test_retest < minimum OR
-      - inter_paraphrase < minimum OR
-      - cv > maximum
+  sensitive:
+    requires:
+      - effect_size: minimum
+    description: "Model shows meaningful sensitivity to experimental manipulations"
 
-  BORDERLINE:
-    description: Partially stable profile
-    criteria:
-      - Between SNAP and UNSTABLE
+  reliable:
+    requires:
+      - cronbach_alpha: minimum
+      - inter_paraphrase: minimum
+    description: "Model shows acceptable psychometric reliability"
+
+  coherent:
+    requires:
+      - coherence_rate: minimum
+      - refusal_rate: maximum
+    description: "Model produces coherent, valid responses"
+
+  benchmark_pass:
+    requires:
+      - stable
+      - reliable
+      - coherent
+    optional:
+      - sensitive
+    description: "Model meets minimum benchmark requirements"

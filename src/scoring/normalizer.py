@@ -1,110 +1,101 @@
-"""Score normalization utilities."""
+"""Score normalization utilities.
 
-from enum import Enum
-from typing import Any
+This module provides functions for normalizing and transforming
+Likert scores for analysis.
+"""
+
+from typing import Sequence
 
 import numpy as np
 
 
-class NormalizationMethod(Enum):
-    """Score normalization methods."""
+def normalize_scores(
+    scores: Sequence[float | None],
+    method: str = "zscore",
+) -> np.ndarray:
+    """Normalize a sequence of scores.
 
-    NONE = "none"  # No normalization
-    Z_SCORE = "z_score"  # Standardize to mean=0, std=1
-    MIN_MAX = "min_max"  # Scale to [0, 1]
-    PERCENT_RANK = "percent_rank"  # Convert to percentile
-    IPSATIVE = "ipsative"  # Within-subject centering
+    Args:
+        scores: Sequence of scores (may contain None for missing values).
+        method: Normalization method ("zscore", "minmax", "percentile").
 
-
-class ScoreNormalizer:
-    """Normalizes scores for cross-model comparison.
-
-    Applies various normalization methods to make scores
-    comparable across different models and conditions.
+    Returns:
+        Numpy array of normalized scores (NaN for missing values).
     """
+    raise NotImplementedError("TODO: Implement normalize_scores")
 
-    def __init__(self, method: NormalizationMethod = NormalizationMethod.Z_SCORE) -> None:
-        """Initialize normalizer.
 
-        Args:
-            method: Normalization method to use.
-        """
-        self.method = method
-        self._reference_stats: dict[str, Any] = {}
+def zscore_normalize(scores: np.ndarray) -> np.ndarray:
+    """Z-score normalize scores.
 
-    def fit(self, scores: list[float]) -> "ScoreNormalizer":
-        """Fit normalizer to reference distribution.
+    Args:
+        scores: Array of scores.
 
-        Args:
-            scores: Reference scores.
+    Returns:
+        Z-score normalized scores.
+    """
+    raise NotImplementedError("TODO: Implement zscore_normalize")
 
-        Returns:
-            Self for chaining.
-        """
-        raise NotImplementedError
 
-    def transform(self, scores: list[float]) -> list[float]:
-        """Transform scores using fitted parameters.
+def minmax_normalize(
+    scores: np.ndarray,
+    min_val: float = 1.0,
+    max_val: float = 7.0,
+) -> np.ndarray:
+    """Min-max normalize scores to 0-1 range.
 
-        Args:
-            scores: Scores to normalize.
+    Args:
+        scores: Array of scores.
+        min_val: Minimum possible score.
+        max_val: Maximum possible score.
 
-        Returns:
-            Normalized scores.
-        """
-        raise NotImplementedError
+    Returns:
+        Min-max normalized scores (0-1 range).
+    """
+    raise NotImplementedError("TODO: Implement minmax_normalize")
 
-    def fit_transform(self, scores: list[float]) -> list[float]:
-        """Fit and transform in one step.
 
-        Args:
-            scores: Scores to normalize.
+def percentile_normalize(scores: np.ndarray) -> np.ndarray:
+    """Convert scores to percentile ranks.
 
-        Returns:
-            Normalized scores.
-        """
-        return self.fit(scores).transform(scores)
+    Args:
+        scores: Array of scores.
 
-    def _z_score(self, scores: list[float]) -> list[float]:
-        """Apply z-score normalization.
+    Returns:
+        Percentile ranks (0-100).
+    """
+    raise NotImplementedError("TODO: Implement percentile_normalize")
 
-        Args:
-            scores: Raw scores.
 
-        Returns:
-            Z-score normalized scores.
-        """
-        raise NotImplementedError
+def handle_missing(
+    scores: Sequence[float | None],
+    method: str = "nan",
+) -> np.ndarray:
+    """Handle missing values in score sequences.
 
-    def _min_max(self, scores: list[float]) -> list[float]:
-        """Apply min-max normalization.
+    Args:
+        scores: Sequence of scores with possible None values.
+        method: How to handle missing ("nan", "mean", "median", "drop").
 
-        Args:
-            scores: Raw scores.
+    Returns:
+        Numpy array with missing values handled.
+    """
+    raise NotImplementedError("TODO: Implement handle_missing")
 
-        Returns:
-            Normalized scores in [0, 1].
-        """
-        raise NotImplementedError
 
-    def _percent_rank(self, scores: list[float]) -> list[float]:
-        """Convert to percentile ranks.
+def aggregate_scores(
+    scores: np.ndarray,
+    method: str = "mean",
+    axis: int | None = None,
+) -> float | np.ndarray:
+    """Aggregate scores using specified method.
 
-        Args:
-            scores: Raw scores.
+    Args:
+        scores: Array of scores.
+        method: Aggregation method ("mean", "median", "mode").
+        axis: Axis to aggregate along (None for all).
 
-        Returns:
-            Percentile ranks.
-        """
-        raise NotImplementedError
-
-    def _ipsative(self, scores: list[float]) -> list[float]:
-        """Apply ipsative (within-subject) centering.
-
-        Args:
-            scores: Raw scores.
-
-        Returns:
-            Mean-centered scores.
-        """
-        raise NotImplementedError
+    Returns:
+        Aggregated score(s).
+    """
+    raise NotImplementedError("TODO: Implement aggregate_scores")

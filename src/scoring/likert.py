@@ -1,116 +1,129 @@
-"""Likert scale scoring utilities."""
+"""Likert scale scoring utilities.
+
+This module provides functions for working with Likert scale
+responses.
+"""
 
 from dataclasses import dataclass
-from typing import Any
+from enum import IntEnum
+
+
+class LikertScore(IntEnum):
+    """Likert scale values with semantic labels."""
+
+    STRONGLY_DISAGREE = 1
+    DISAGREE = 2
+    SOMEWHAT_DISAGREE = 3
+    NEUTRAL = 4
+    SOMEWHAT_AGREE = 5
+    AGREE = 6
+    STRONGLY_AGREE = 7
 
 
 @dataclass
-class ScoringResult:
-    """Result of scoring a set of responses."""
+class LikertScale:
+    """Configuration for a Likert scale.
 
-    scores: list[int | None]
-    """Individual scores."""
-
-    mean: float | None
-    """Mean score (excluding None values)."""
-
-    std: float | None
-    """Standard deviation."""
-
-    valid_count: int
-    """Number of valid (non-None) scores."""
-
-    total_count: int
-    """Total number of scores."""
-
-    @property
-    def validity_rate(self) -> float:
-        """Proportion of valid scores."""
-        return self.valid_count / self.total_count if self.total_count > 0 else 0.0
-
-
-class LikertScorer:
-    """Handles Likert scale scoring and aggregation.
-
-    Computes statistics over sets of Likert responses.
+    Attributes:
+        min_value: Minimum scale value.
+        max_value: Maximum scale value.
+        midpoint: Neutral midpoint value.
+        labels: Optional labels for each value.
     """
 
-    def __init__(
-        self,
-        min_score: int = 1,
-        max_score: int = 7,
-        reverse_items: list[str] | None = None,
-    ) -> None:
-        """Initialize Likert scorer.
+    min_value: int = 1
+    max_value: int = 7
+    midpoint: int = 4
+    labels: dict[int, str] | None = None
+
+    def is_valid(self, score: int) -> bool:
+        """Check if a score is valid for this scale.
 
         Args:
-            min_score: Minimum scale value.
-            max_score: Maximum scale value.
-            reverse_items: List of item IDs to reverse score.
-        """
-        self.min_score = min_score
-        self.max_score = max_score
-        self.reverse_items = reverse_items or []
-
-    def score(self, scores: list[int | None]) -> ScoringResult:
-        """Compute statistics for a list of scores.
-
-        Args:
-            scores: List of Likert scores (None for missing).
+            score: The score to check.
 
         Returns:
-            ScoringResult with statistics.
+            True if valid, False otherwise.
         """
-        raise NotImplementedError
+        raise NotImplementedError("TODO: Implement LikertScale.is_valid")
 
-    def reverse_score(self, score: int) -> int:
-        """Reverse a score on the scale.
+    def get_label(self, score: int) -> str:
+        """Get the label for a score.
 
         Args:
-            score: Original score.
+            score: The score to label.
 
         Returns:
-            Reversed score.
+            The label string.
         """
-        return self.max_score - score + self.min_score
+        raise NotImplementedError("TODO: Implement LikertScale.get_label")
 
-    def aggregate_by_item(
-        self, results: list[dict[str, Any]]
-    ) -> dict[str, ScoringResult]:
-        """Aggregate scores by item ID.
 
-        Args:
-            results: List of result dicts with "item_id" and "score".
+def score_response(
+    raw_score: int | None,
+    scale: LikertScale | None = None,
+    reverse: bool = False,
+) -> int | None:
+    """Process a raw score into a final score.
 
-        Returns:
-            Dict mapping item_id to ScoringResult.
-        """
-        raise NotImplementedError
+    Args:
+        raw_score: The raw extracted score.
+        scale: The Likert scale configuration.
+        reverse: Whether to reverse-score the item.
 
-    def aggregate_by_dimension(
-        self, results: list[dict[str, Any]], item_dimensions: dict[str, str]
-    ) -> dict[str, ScoringResult]:
-        """Aggregate scores by dimension.
+    Returns:
+        The processed score, or None if invalid.
+    """
+    raise NotImplementedError("TODO: Implement score_response")
 
-        Args:
-            results: List of result dicts.
-            item_dimensions: Mapping of item_id to dimension.
 
-        Returns:
-            Dict mapping dimension to ScoringResult.
-        """
-        raise NotImplementedError
+def reverse_score(score: int, scale: LikertScale | None = None) -> int:
+    """Reverse a Likert score.
 
-    def compute_profile(
-        self, results: list[dict[str, Any]], item_dimensions: dict[str, str]
-    ) -> dict[str, float]:
-        """Compute dimension profile from scores.
+    Args:
+        score: The score to reverse.
+        scale: The Likert scale configuration.
 
-        Args:
-            results: List of result dicts.
-            item_dimensions: Mapping of item_id to dimension.
+    Returns:
+        The reversed score.
+    """
+    raise NotImplementedError("TODO: Implement reverse_score")
 
-        Returns:
-            Dict mapping dimension to mean score.
-        """
-        raise NotImplementedError
+
+def categorize_score(score: int, scale: LikertScale | None = None) -> str:
+    """Categorize a score into a semantic category.
+
+    Args:
+        score: The score to categorize.
+        scale: The Likert scale configuration.
+
+    Returns:
+        Category string (e.g., "low", "neutral", "high").
+    """
+    raise NotImplementedError("TODO: Implement categorize_score")
+
+
+def is_extreme(score: int, scale: LikertScale | None = None) -> bool:
+    """Check if a score is at the extremes of the scale.
+
+    Args:
+        score: The score to check.
+        scale: The Likert scale configuration.
+
+    Returns:
+        True if at an extreme (1 or 7), False otherwise.
+    """
+    raise NotImplementedError("TODO: Implement is_extreme")
+
+
+def is_neutral(score: int, scale: LikertScale | None = None) -> bool:
+    """Check if a score is neutral.
+
+    Args:
+        score: The score to check.
+        scale: The Likert scale configuration.
+
+    Returns:
+        True if neutral (4), False otherwise.
+    """
+    raise NotImplementedError("TODO: Implement is_neutral")

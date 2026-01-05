@@ -1,4 +1,8 @@
-"""Hypothesis testing for experimental effects."""
+"""Hypothesis testing for SNAP data.
+
+This module provides functions for statistical hypothesis
+testing on experimental results.
+"""
 
 from dataclasses import dataclass
 from typing import Any
@@ -8,140 +12,160 @@ import pandas as pd
 
 
 @dataclass
-class HypothesisResult:
-    """Result of hypothesis test."""
+class ANOVAResult:
+    """Results from ANOVA analysis.
 
-    test_name: str
-    """Name of statistical test."""
-
-    statistic: float
-    """Test statistic value."""
-
-    p_value: float
-    """P-value."""
-
-    effect_size: float
-    """Effect size (Cohen's d, eta-squared, etc.)."""
-
-    effect_size_type: str
-    """Type of effect size measure."""
-
-    significant: bool
-    """Whether result is significant at alpha=0.05."""
-
-    interpretation: str
-    """Qualitative interpretation."""
-
-
-class HypothesisTester:
-    """Performs hypothesis tests for SNAP experiment.
-
-    Tests for effects of experimental manipulations.
+    Attributes:
+        f_statistic: F-statistic value.
+        p_value: P-value.
+        df_between: Degrees of freedom between groups.
+        df_within: Degrees of freedom within groups.
+        eta_squared: Effect size (eta-squared).
+        significant: Whether result is significant at alpha=0.05.
     """
 
-    def __init__(
-        self, results: pd.DataFrame, alpha: float = 0.05
-    ) -> None:
-        """Initialize tester with results.
+    f_statistic: float
+    p_value: float
+    df_between: int
+    df_within: int
+    eta_squared: float
+    significant: bool
 
-        Args:
-            results: DataFrame with experiment results.
-            alpha: Significance level.
-        """
-        self.results = results
-        self.alpha = alpha
 
-    def temperature_effect(self, model_id: str) -> HypothesisResult:
-        """Test effect of temperature on responses.
+@dataclass
+class EffectSize:
+    """Effect size statistics.
 
-        Args:
-            model_id: Model to analyze.
+    Attributes:
+        cohens_d: Cohen's d effect size.
+        interpretation: Qualitative interpretation.
+        ci_lower: Lower 95% CI bound.
+        ci_upper: Upper 95% CI bound.
+    """
 
-        Returns:
-            HypothesisResult for temperature effect.
-        """
-        raise NotImplementedError
+    cohens_d: float
+    interpretation: str
+    ci_lower: float
+    ci_upper: float
 
-    def prompt_effect(self, model_id: str) -> HypothesisResult:
-        """Test effect of system prompt on responses.
 
-        Args:
-            model_id: Model to analyze.
+def run_anova(
+    df: pd.DataFrame,
+    dv: str,
+    between: str | list[str],
+) -> ANOVAResult:
+    """Run one-way or factorial ANOVA.
 
-        Returns:
-            HypothesisResult for prompt effect.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with experimental data.
+        dv: Dependent variable column.
+        between: Between-subjects factor(s).
 
-    def context_effect(self, model_id: str) -> HypothesisResult:
-        """Test effect of context on moral responses.
+    Returns:
+        ANOVAResult with test statistics.
+    """
+    raise NotImplementedError("TODO: Implement run_anova")
 
-        Args:
-            model_id: Model to analyze.
 
-        Returns:
-            HypothesisResult for context effect.
-        """
-        raise NotImplementedError
+def run_repeated_measures_anova(
+    df: pd.DataFrame,
+    dv: str,
+    within: str | list[str],
+    subject: str,
+) -> ANOVAResult:
+    """Run repeated measures ANOVA.
 
-    def model_comparison(
-        self, model1: str, model2: str
-    ) -> HypothesisResult:
-        """Compare two models' response profiles.
+    Args:
+        df: DataFrame with experimental data.
+        dv: Dependent variable column.
+        within: Within-subjects factor(s).
+        subject: Subject identifier column.
 
-        Args:
-            model1: First model ID.
-            model2: Second model ID.
+    Returns:
+        ANOVAResult with test statistics.
+    """
+    raise NotImplementedError("TODO: Implement run_repeated_measures_anova")
 
-        Returns:
-            HypothesisResult for model difference.
-        """
-        raise NotImplementedError
 
-    def anova(
-        self, dv: str, factors: list[str], model_id: str | None = None
-    ) -> dict[str, HypothesisResult]:
-        """Perform factorial ANOVA.
+def compute_effect_sizes(
+    group1: np.ndarray,
+    group2: np.ndarray,
+) -> EffectSize:
+    """Compute effect size between two groups.
 
-        Args:
-            dv: Dependent variable (score column).
-            factors: List of factor column names.
-            model_id: Optional model to filter by.
+    Args:
+        group1: Scores for first group.
+        group2: Scores for second group.
 
-        Returns:
-            Dict mapping factor to HypothesisResult.
-        """
-        raise NotImplementedError
+    Returns:
+        EffectSize with Cohen's d and interpretation.
+    """
+    raise NotImplementedError("TODO: Implement compute_effect_sizes")
 
-    @staticmethod
-    def cohens_d(group1: list[float], group2: list[float]) -> float:
-        """Compute Cohen's d effect size.
 
-        Args:
-            group1: First group scores.
-            group2: Second group scores.
+def run_posthoc_tests(
+    df: pd.DataFrame,
+    dv: str,
+    factor: str,
+    correction: str = "bonferroni",
+) -> pd.DataFrame:
+    """Run post-hoc pairwise comparisons.
 
-        Returns:
-            Cohen's d value.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with experimental data.
+        dv: Dependent variable column.
+        factor: Factor for comparisons.
+        correction: Multiple comparison correction method.
 
-    @staticmethod
-    def interpret_effect_size(d: float) -> str:
-        """Interpret Cohen's d effect size.
+    Returns:
+        DataFrame with pairwise comparison results.
+    """
+    raise NotImplementedError("TODO: Implement run_posthoc_tests")
 
-        Args:
-            d: Cohen's d value.
 
-        Returns:
-            Qualitative interpretation.
-        """
-        d_abs = abs(d)
-        if d_abs >= 0.8:
-            return "large"
-        elif d_abs >= 0.5:
-            return "medium"
-        elif d_abs >= 0.2:
-            return "small"
-        else:
-            return "negligible"
+def run_ttest(
+    group1: np.ndarray,
+    group2: np.ndarray,
+    paired: bool = False,
+) -> dict[str, Any]:
+    """Run t-test between two groups.
+
+    Args:
+        group1: Scores for first group.
+        group2: Scores for second group.
+        paired: Whether to run paired t-test.
+
+    Returns:
+        Dictionary with t-statistic, p-value, effect size.
+    """
+    raise NotImplementedError("TODO: Implement run_ttest")
+
+
+def interpret_effect_size(d: float) -> str:
+    """Interpret Cohen's d effect size.
+
+    Args:
+        d: Cohen's d value.
+
+    Returns:
+        Interpretation string ("small", "medium", "large").
+    """
+    raise NotImplementedError("TODO: Implement interpret_effect_size")
+
+
+def compute_power(
+    effect_size: float,
+    n: int,
+    alpha: float = 0.05,
+) -> float:
+    """Compute statistical power.
+
+    Args:
+        effect_size: Expected effect size (Cohen's d).
+        n: Sample size per group.
+        alpha: Significance level.
+
+    Returns:
+        Statistical power (0-1).
+    """
+    raise NotImplementedError("TODO: Implement compute_power")

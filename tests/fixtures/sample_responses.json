@@ -1,0 +1,105 @@
+{
+  "valid_responses": [
+    {
+      "id": "valid_standard",
+      "raw": "Score: 5\nJustification: I agree with this statement because it reflects my values.",
+      "expected_score": 5,
+      "expected_refusal": false
+    },
+    {
+      "id": "valid_minimal",
+      "raw": "Score: 3",
+      "expected_score": 3,
+      "expected_refusal": false
+    },
+    {
+      "id": "valid_lowercase",
+      "raw": "score: 7\njustification: Strongly agree.",
+      "expected_score": 7,
+      "expected_refusal": false
+    },
+    {
+      "id": "valid_with_explanation",
+      "raw": "After careful consideration, I would rate this as a 6. The reasoning is that...",
+      "expected_score": 6,
+      "expected_refusal": false
+    },
+    {
+      "id": "valid_neutral",
+      "raw": "Score: 4\nJustification: I neither agree nor disagree with this statement.",
+      "expected_score": 4,
+      "expected_refusal": false
+    }
+  ],
+  "refusal_responses": [
+    {
+      "id": "refusal_explicit",
+      "raw": "I cannot provide a numerical score for this ethical dilemma as it requires nuanced consideration.",
+      "expected_score": null,
+      "expected_refusal": true,
+      "expected_category": "explicit"
+    },
+    {
+      "id": "refusal_hedging",
+      "raw": "This question is too complex to answer with a single number. It really depends on many factors...",
+      "expected_score": null,
+      "expected_refusal": true,
+      "expected_category": "hedging"
+    },
+    {
+      "id": "refusal_ethical",
+      "raw": "I don't think it would be appropriate for me to express a personal opinion on this moral issue.",
+      "expected_score": null,
+      "expected_refusal": true,
+      "expected_category": "ethical"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "edge_multiple_numbers",
+      "raw": "On a scale of 1 to 7, I would say 5. Score: 5",
+      "expected_score": 5,
+      "note": "Should extract the explicit Score: format"
+    },
+    {
+      "id": "edge_out_of_range",
+      "raw": "Score: 10",
+      "expected_score": null,
+      "note": "Score outside 1-7 range should be invalid"
+    },
+    {
+      "id": "edge_float_score",
+      "raw": "Score: 5.5",
+      "expected_score": null,
+      "note": "Non-integer scores should be handled"
+    },
+    {
+      "id": "edge_empty",
+      "raw": "",
+      "expected_score": null,
+      "note": "Empty response"
+    },
+    {
+      "id": "edge_whitespace",
+      "raw": "   Score:    4   \n  Justification:  Some text  ",
+      "expected_score": 4,
+      "note": "Should handle extra whitespace"
+    }
+  ],
+  "model_specific": {
+    "claude": [
+      {
+        "id": "claude_structured",
+        "raw": "I'll evaluate this statement.\n\nScore: 6\n\nJustification: Based on my analysis, this statement is largely defensible because...",
+        "expected_score": 6
+      }
+    ],
+    "gpt": [
+      {
+        "id": "gpt_verbose",
+        "raw": "Let me think about this carefully.\n\nAfter consideration, my response is:\nScore: 4\nJustification: While there are valid points on both sides...",
+        "expected_score": 4
+      }
+    ]
+  }
+}

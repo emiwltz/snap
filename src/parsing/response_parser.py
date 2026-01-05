@@ -1,96 +1,88 @@
-"""Likert scale response parsing."""
+"""Response parser for extracting Likert scores.
+
+This module handles parsing LLM responses to extract
+structured score data.
+"""
 
 import re
 from dataclasses import dataclass
-from enum import Enum
-
-
-class ParseConfidence(Enum):
-    """Confidence level in score extraction."""
-
-    HIGH = "high"  # Clean numeric response
-    MEDIUM = "medium"  # Number extracted from text
-    LOW = "low"  # Ambiguous or inferred
-    NONE = "none"  # Could not extract
 
 
 @dataclass
 class ParsedResponse:
-    """Result of parsing an LLM response for Likert score."""
+    """Parsed response from an LLM.
+
+    Attributes:
+        score: The extracted Likert score (1-7), or None if unparseable.
+        is_refusal: Whether the response is a refusal.
+        refusal_category: Category of refusal if applicable.
+        raw_response: The original response text.
+        justification: Extracted justification text, if any.
+        confidence: Confidence in the extraction (0.0-1.0).
+    """
 
     score: int | None
-    """Extracted Likert score (1-7) or None if failed."""
-
     is_refusal: bool
-    """Whether the model refused to answer."""
-
     refusal_category: str | None
-    """Category of refusal if applicable."""
-
     raw_response: str
-    """Original response text."""
+    justification: str | None = None
+    confidence: float = 1.0
 
-    confidence: ParseConfidence
-    """Confidence in the extraction."""
 
-    extraction_method: str | None = None
-    """Method used to extract the score."""
-
-    @property
-    def is_valid(self) -> bool:
-        """Check if response yielded a valid score."""
-        return self.score is not None and 1 <= self.score <= 7
+# Regex patterns for score extraction
+SCORE_PATTERNS: list[re.Pattern[str]] = [
+    re.compile(r"Score:\s*(\d)", re.IGNORECASE),
+    re.compile(r"^(\d)\s*[-:/]", re.MULTILINE),
+    re.compile(r"\b([1-7])\b"),  # Fallback: any single digit 1-7
+]
 
 
 def parse_likert_response(response: str) -> ParsedResponse:
-    """Extract Likert score from LLM response.
+    """Extract a Likert score from an LLM response.
 
-    Attempts multiple extraction strategies in order of confidence:
-    1. Clean single digit (1-7)
-    2. Number at start/end of response
-    3. Number in context ("I rate this a 4")
-    4. Keyword mapping ("strongly agree" -> 7)
+    Attempts to parse the response using multiple strategies,
+    returning the most confident extraction.
 
     Args:
-        response: Raw LLM response text.
+        response: The raw response text from the LLM.
 
     Returns:
-        ParsedResponse with extracted score and metadata.
+        ParsedResponse with extracted data.
     """
-    raise NotImplementedError
+    raise NotImplementedError("TODO: Implement parse_likert_response")
 
 
-def extract_clean_number(response: str) -> int | None:
-    """Extract score from clean numeric response.
+def extract_score(response: str) -> tuple[int | None, float]:
+    """Extract just the numeric score from a response.
 
     Args:
-        response: Response text.
+        response: The raw response text.
 
     Returns:
-        Score if response is just a number 1-7, else None.
+        Tuple of (score, confidence).
     """
-    raise NotImplementedError
+    raise NotImplementedError("TODO: Implement extract_score")
 
 
-def extract_number_from_text(response: str) -> tuple[int | None, str | None]:
-    """Extract score from text containing a number.
+def extract_justification(response: str) -> str | None:
+    """Extract the justification text from a response.
 
     Args:
-        response: Response text.
+        response: The raw response text.
 
     Returns:
-        Tuple of (score, extraction_method) or (None, None).
+        The justification text, or None if not found.
     """
-    raise NotImplementedError
+    raise NotImplementedError("TODO: Implement extract_justification")
 
 
-def map_keyword_to_score(response: str) -> int | None:
-    """Map Likert keywords to numeric scores.
+def validate_score(score: int | None) -> bool:
+    """Validate that a score is in the valid range.
 
     Args:
-        response: Response text.
+        score: The score to validate.
 
     Returns:
-        Inferred score or None.
+        True if valid (1-7), False otherwise.
     """
-    raise NotImplementedError
+    raise NotImplementedError("TODO: Implement validate_score")

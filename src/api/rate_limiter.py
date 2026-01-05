@@ -1,84 +1,68 @@
-"""Async rate limiter for API calls."""
+"""Rate limiter for API request throttling.
+
+This module provides rate limiting functionality to prevent
+exceeding API rate limits.
+"""
 
 import asyncio
-from collections import deque
-from typing import Any
+from dataclasses import dataclass
+
+
+@dataclass
+class RateLimitConfig:
+    """Configuration for rate limiting.
+
+    Attributes:
+        requests_per_minute: Maximum requests allowed per minute.
+        burst_limit: Maximum burst of requests allowed.
+    """
+
+    requests_per_minute: int = 60
+    burst_limit: int = 10
 
 
 class RateLimiter:
-    """Token bucket rate limiter for async operations.
+    """Token bucket rate limiter for API requests.
 
-    Ensures API calls don't exceed the specified rate limit.
+    Implements a token bucket algorithm to throttle API requests
+    and prevent rate limit violations.
+
+    Attributes:
+        config: Rate limiting configuration.
     """
 
-    def __init__(self, requests_per_minute: int = 60) -> None:
-        """Initialize rate limiter.
+    def __init__(self, config: RateLimitConfig | None = None) -> None:
+        """Initialize the rate limiter.
 
         Args:
-            requests_per_minute: Maximum requests allowed per minute.
+            config: Rate limiting configuration. Uses defaults if not provided.
         """
-        self.rpm = requests_per_minute
-        self.interval = 60.0 / requests_per_minute
-        self._timestamps: deque[float] = deque()
-        self._lock = asyncio.Lock()
+        self.config = config or RateLimitConfig()
+        self._tokens: float = 0.0
+        self._last_update: float = 0.0
+        self._lock: asyncio.Lock | None = None
+        raise NotImplementedError("TODO: Implement RateLimiter.__init__")
 
     async def acquire(self) -> None:
-        """Acquire permission to make a request.
+        """Acquire a token, waiting if necessary.
 
-        Blocks until rate limit allows another request.
+        This method blocks until a token is available according
+        to the rate limit configuration.
         """
-        raise NotImplementedError
+        raise NotImplementedError("TODO: Implement RateLimiter.acquire")
 
     async def wait_if_needed(self) -> float:
-        """Wait if necessary and return wait time.
+        """Wait if rate limit would be exceeded.
 
         Returns:
-            Time waited in seconds.
+            The time waited in seconds (0.0 if no wait was needed).
         """
-        raise NotImplementedError
+        raise NotImplementedError("TODO: Implement RateLimiter.wait_if_needed")
 
-    @property
-    def current_rate(self) -> float:
-        """Return current request rate (requests per minute)."""
-        raise NotImplementedError
+    def get_current_rate(self) -> float:
+        """Get the current request rate.
 
-    def reset(self) -> None:
-        """Reset the rate limiter state."""
-        self._timestamps.clear()
-
-
-class AdaptiveRateLimiter(RateLimiter):
-    """Rate limiter that adapts to API responses.
-
-    Automatically adjusts rate based on rate limit headers
-    and error responses.
-    """
-
-    def __init__(self, initial_rpm: int = 60) -> None:
-        """Initialize adaptive rate limiter.
-
-        Args:
-            initial_rpm: Starting requests per minute.
+        Returns:
+            Current requests per minute.
         """
-        super().__init__(initial_rpm)
-        self._backoff_factor = 1.0
-
-    def update_from_response(self, headers: dict[str, Any]) -> None:
-        """Update rate limit from response headers.
-
-        Args:
-            headers: Response headers with rate limit info.
-        """
-        raise NotImplementedError
-
-    def backoff(self, factor: float = 2.0) -> None:
-        """Apply backoff after rate limit error.
-
-        Args:
-            factor: Backoff multiplier.
-        """
-        raise NotImplementedError
-
-    def recover(self) -> None:
-        """Gradually recover from backoff."""
-        raise NotImplementedError
+        raise NotImplementedError("TODO: Implement RateLimiter.get_current_rate")

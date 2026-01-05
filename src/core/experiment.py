@@ -1,135 +1,156 @@
-"""Experiment orchestration."""
+"""Experiment orchestration.
+
+This module provides the main experiment runner that coordinates
+API calls, parsing, and result storage.
+"""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from src.core.condition import Condition
-
-
-@dataclass
-class ExperimentConfig:
-    """Configuration for an experiment run."""
-
-    name: str
-    """Experiment name."""
-
-    models: list[str]
-    """List of model IDs to test."""
-
-    items: dict[str, list[str]]
-    """Items by category (moral, personality)."""
-
-    paraphrases: list[str]
-    """Paraphrase variants."""
-
-    system_prompts: list[str]
-    """System prompt types."""
-
-    temperatures: list[float]
-    """Temperature values."""
-
-    contexts: dict[str, list[str]]
-    """Context variants by category."""
-
-    runs: int
-    """Number of repetitions."""
-
-    api_config: dict[str, Any] = field(default_factory=dict)
-    """API configuration (rate limits, timeouts, etc.)."""
+from src.core.condition import Condition, ExperimentConfig
 
 
 @dataclass
 class ExperimentResult:
-    """Result of a single condition evaluation."""
+    """Results from a completed experiment.
 
-    condition: Condition
-    """The experimental condition."""
+    Attributes:
+        config: The experiment configuration used.
+        start_time: When the experiment started.
+        end_time: When the experiment completed.
+        total_calls: Total API calls made.
+        successful_calls: Number of successful calls.
+        failed_calls: Number of failed calls.
+        results: Dictionary mapping (model, condition) to parsed responses.
+    """
 
-    model_id: str
-    """Model that generated the response."""
+    config: ExperimentConfig
+    start_time: datetime
+    end_time: datetime | None = None
+    total_calls: int = 0
+    successful_calls: int = 0
+    failed_calls: int = 0
+    results: dict[str, Any] = field(default_factory=dict)
 
-    raw_response: str
-    """Raw API response."""
+    def save(self, path: Path) -> None:
+        """Save results to disk.
 
-    score: int | None
-    """Extracted Likert score (1-7) or None if failed."""
+        Args:
+            path: Path to save the results.
+        """
+        raise NotImplementedError("TODO: Implement ExperimentResult.save")
 
-    is_refusal: bool
-    """Whether the model refused to answer."""
+    @classmethod
+    def load(cls, path: Path) -> "ExperimentResult":
+        """Load results from disk.
 
-    latency_ms: float
-    """Response latency in milliseconds."""
+        Args:
+            path: Path to load results from.
 
-    cached: bool
-    """Whether response was from cache."""
-
-    error: str | None = None
-    """Error message if failed."""
+        Returns:
+            Loaded ExperimentResult.
+        """
+        raise NotImplementedError("TODO: Implement ExperimentResult.load")
 
 
 class Experiment:
-    """Orchestrates a complete SNAP experiment.
+    """Main experiment runner.
 
-    Handles condition generation, API calls, caching, and result collection.
+    Orchestrates the full experiment including condition generation,
+    API calls, response parsing, and result storage.
+
+    Attributes:
+        config: Experiment configuration.
+        data_dir: Directory for data storage.
     """
 
-    def __init__(self, config: ExperimentConfig) -> None:
-        """Initialize experiment.
+    def __init__(
+        self,
+        config: ExperimentConfig,
+        data_dir: Path | None = None,
+    ) -> None:
+        """Initialize the experiment.
 
         Args:
             config: Experiment configuration.
+            data_dir: Directory for data storage.
         """
         self.config = config
-        self._results: list[ExperimentResult] = []
-        self._conditions: list[Condition] = []
+        self.data_dir = data_dir or Path("data")
+        self._checkpoint_path: Path | None = None
+        raise NotImplementedError("TODO: Implement Experiment.__init__")
 
-    @classmethod
-    def from_yaml(cls, config_path: Path) -> "Experiment":
-        """Load experiment from YAML configuration.
-
-        Args:
-            config_path: Path to experiment.yaml.
-
-        Returns:
-            Configured Experiment instance.
-        """
-        raise NotImplementedError
-
-    async def run(self, mode: str = "full") -> list[ExperimentResult]:
+    async def run(
+        self,
+        mode: str = "full",
+        dry_run: bool = False,
+        models: list[str] | None = None,
+    ) -> ExperimentResult:
         """Run the experiment.
 
         Args:
             mode: Either "pilot" or "full".
+            dry_run: If True, only estimate costs without making calls.
+            models: Optional subset of models to run.
 
         Returns:
-            List of all experiment results.
-        """
-        raise NotImplementedError
+            ExperimentResult with all collected data.
 
-    async def run_condition(
-        self, condition: Condition, model_id: str
-    ) -> ExperimentResult:
-        """Run a single experimental condition.
+        Raises:
+            ExperimentError: If the experiment fails.
+        """
+        raise NotImplementedError("TODO: Implement Experiment.run")
+
+    async def resume(self, checkpoint_path: Path) -> ExperimentResult:
+        """Resume an interrupted experiment from checkpoint.
 
         Args:
-            condition: The condition to evaluate.
-            model_id: Model to use.
+            checkpoint_path: Path to the checkpoint file.
 
         Returns:
-            Result of the evaluation.
-        """
-        raise NotImplementedError
+            ExperimentResult continuing from checkpoint.
 
-    def save_results(self, output_path: Path) -> None:
-        """Save results to JSON file.
+        Raises:
+            CheckpointError: If the checkpoint is invalid.
+        """
+        raise NotImplementedError("TODO: Implement Experiment.resume")
+
+    def save_checkpoint(self, result: ExperimentResult) -> Path:
+        """Save a checkpoint of current progress.
 
         Args:
-            output_path: Path to output file.
-        """
-        raise NotImplementedError
+            result: Current experiment result.
 
-    @property
-    def progress(self) -> tuple[int, int]:
-        """Return (completed, total) condition count."""
-        raise NotImplementedError
+        Returns:
+            Path to the saved checkpoint.
+        """
+        raise NotImplementedError("TODO: Implement Experiment.save_checkpoint")
+
+    async def _run_condition(
+        self,
+        model: str,
+        condition: Condition,
+    ) -> dict[str, Any]:
+        """Run a single condition for a model.
+
+        Args:
+            model: The model ID.
+            condition: The experimental condition.
+
+        Returns:
+            Dictionary with response and metadata.
+        """
+        raise NotImplementedError("TODO: Implement Experiment._run_condition")
+
+    def _build_prompt(self, condition: Condition) -> list[dict[str, str]]:
+        """Build the prompt messages for a condition.
+
+        Args:
+            condition: The experimental condition.
+
+        Returns:
+            List of message dictionaries.
+        """
+        raise NotImplementedError("TODO: Implement Experiment._build_prompt")

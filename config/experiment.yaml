@@ -1,84 +1,63 @@
-# SNAP Experimental Design Configuration
+# SNAP Experiment Configuration
 
 experiment:
   name: SNAP_POC_v1
-  version: "0.1.0"
-  description: Proof of concept for LLM psychometric profiling
+  version: "1.0.0"
+  description: "Psychometric benchmark for LLM stability and contextual sensitivity"
 
-# Experimental Variables
-variables:
-  items:
-    moral:
-      - M01
-      - M02
-      - M03
-      - M04
-      - M05
-    personality:
-      - P01
-      - P02
-      - P03
-      - P04
-      - P05
-
-  paraphrases:
-    - P1  # Original formulation
-    - P2  # First paraphrase
-    - P3  # Second paraphrase
-
-  system_prompts:
-    - NEU  # Neutral: minimal instructions
-    - DIR  # Directive: explicit rating request
-    - PER  # Persona: roleplay as research participant
-    - ABS  # Abstract: philosophical framing
-
-  temperatures:
-    - 0.0  # Deterministic
-    - 0.5  # Balanced
-    - 1.0  # Creative
-
-  contexts:
-    moral:
-      - C0  # Baseline: no context
-      - C1  # Moral dilemma context
-    personality:
-      - C0  # Baseline only
-
-  runs: 3  # Number of repetitions per condition
-
-# Experiment Modes
-modes:
-  pilot:
-    description: Quick validation with subset of models
-    models:
-      - claude-haiku
-      - mistral-large
-      - grok-2
-    items_per_category: 2  # Use only M01, M02, P01, P02
-    runs: 2
-
-  full:
-    description: Complete experiment with all models
-    models: all
-    items_per_category: 5
+  # Experimental design variables
+  variables:
+    items:
+      moral: [M01, M02, M03, M04, M05]
+      personality: [P01, P02, P03, P04, P05]
+    paraphrases: [P1, P2, P3]
+    system_prompts: [NEU, DIR, PER, ABS]
+    temperatures: [0.0, 0.5, 1.0]
+    contexts:
+      moral: [C0, C1]      # C0 = baseline, C1 = dilemma context
+      personality: [C0]     # No context variation for personality items
     runs: 3
 
-# API Configuration
-api:
-  max_retries: 3
-  timeout_seconds: 30
-  rate_limit_rpm: 60
-  cache_enabled: true
-  cache_ttl_hours: 168  # 1 week
+  # Pilot mode configuration (subset for testing)
+  pilot:
+    models: [claude-haiku, mistral-large, grok-2]
+    items:
+      moral: [M01, M02]
+      personality: [P01, P02]
+    runs: 2
+    # Estimated calls: 3 models * (2+2) items * 3 paraphrases * 4 prompts * 3 temps * (avg 1.5 contexts) * 2 runs
+    # = 3 * 4 * 3 * 4 * 3 * 1.5 * 2 = ~1,296 calls (rough estimate)
 
-# Response Configuration
-response:
-  max_tokens: 150
-  expected_format: "likert_1_7"
+  # Full mode configuration
+  full:
+    models: all  # Uses all models from models.yaml
+    # Estimated calls: 10 models * 10 items * 3 paraphrases * 4 prompts * 3 temps * (avg 1.5 contexts) * 3 runs
+    # = 10 * 10 * 3 * 4 * 3 * 1.5 * 3 = 16,200 calls
 
-# Output Configuration
-output:
-  raw_dir: data/raw
-  processed_dir: data/processed
-  logs_dir: data/logs
-  reports_dir: data/reports
+  # API configuration
+  api:
+    max_retries: 3
+    retry_delay_seconds: 1.0
+    retry_multiplier: 2.0
+    timeout_seconds: 30
+    rate_limit_rpm: 60
+    rate_limit_burst: 10
+    cache_enabled: true
+    cache_ttl_days: 7
+
+  # Response configuration
+  response:
+    max_tokens: 150
+    expected_format: "Score: [1-7]\nJustification: [optional text]"
+
+  # Checkpointing
+  checkpoint:
+    enabled: true
+    interval_calls: 100
+    directory: "data/checkpoints"
+
+  # Logging
+  logging:
+    level: INFO
+    directory: "data/logs"
+    format: "{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}"

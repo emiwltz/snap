@@ -1,17 +1,15 @@
-"""Core experiment orchestration module."""
+"""Core module for experiment orchestration."""
 
 from src.core.condition import Condition, generate_conditions
-from src.core.exceptions import SNAPError, APIError, ParseError, ValidationError
-from src.core.experiment import Experiment
-from src.core.matrix import ExperimentMatrix
+from src.core.exceptions import SNAPError
+from src.core.experiment import Experiment, ExperimentResult
+from src.core.matrix import ResultMatrix
 
 __all__ = [
     "Condition",
     "generate_conditions",
-    "SNAPError",
-    "APIError",
-    "ParseError",
-    "ValidationError",
     "Experiment",
-    "ExperimentMatrix",
+    "ExperimentResult",
+    "ResultMatrix",
+    "SNAPError",
 ]

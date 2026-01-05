@@ -1,4 +1,8 @@
-"""HTML report generation."""
+"""HTML report generation.
+
+This module generates comprehensive HTML reports from
+experiment results.
+"""
 
 from pathlib import Path
 from typing import Any
@@ -6,111 +10,101 @@ from typing import Any
 import pandas as pd
 
 
-class HTMLReportGenerator:
-    """Generates comprehensive HTML reports for SNAP experiments.
+def generate_html_report(
+    results_df: pd.DataFrame,
+    output_path: Path,
+    title: str = "SNAP Experiment Report",
+) -> Path:
+    """Generate a complete HTML report.
 
-    Creates interactive reports with charts, tables, and verdicts.
+    Args:
+        results_df: DataFrame with experiment results.
+        output_path: Path to save the report.
+        title: Report title.
+
+    Returns:
+        Path to the generated report.
     """
+    raise NotImplementedError("TODO: Implement generate_html_report")
 
-    def __init__(
-        self,
-        results: pd.DataFrame,
-        analysis: dict[str, Any],
-        output_dir: Path | str = "data/reports",
-    ) -> None:
-        """Initialize report generator.
 
-        Args:
-            results: DataFrame with experiment results.
-            analysis: Dict with analysis results.
-            output_dir: Directory for output files.
-        """
-        self.results = results
-        self.analysis = analysis
-        self.output_dir = Path(output_dir)
+def generate_summary_section(results_df: pd.DataFrame) -> str:
+    """Generate the summary section HTML.
 
-    def generate(self, filename: str = "snap_report.html") -> Path:
-        """Generate complete HTML report.
+    Args:
+        results_df: DataFrame with experiment results.
 
-        Args:
-            filename: Output filename.
+    Returns:
+        HTML string for the summary section.
+    """
+    raise NotImplementedError("TODO: Implement generate_summary_section")
 
-        Returns:
-            Path to generated report.
-        """
-        raise NotImplementedError
 
-    def _render_header(self) -> str:
-        """Render report header section.
+def generate_model_comparison_section(results_df: pd.DataFrame) -> str:
+    """Generate the model comparison section HTML.
 
-        Returns:
-            HTML string for header.
-        """
-        raise NotImplementedError
+    Args:
+        results_df: DataFrame with experiment results.
 
-    def _render_summary(self) -> str:
-        """Render executive summary section.
+    Returns:
+        HTML string for the model comparison section.
+    """
+    raise NotImplementedError("TODO: Implement generate_model_comparison_section")
 
-        Returns:
-            HTML string for summary.
-        """
-        raise NotImplementedError
 
-    def _render_model_profiles(self) -> str:
-        """Render individual model profile sections.
+def generate_reliability_section(results_df: pd.DataFrame) -> str:
+    """Generate the reliability analysis section HTML.
 
-        Returns:
-            HTML string for profiles.
-        """
-        raise NotImplementedError
+    Args:
+        results_df: DataFrame with experiment results.
 
-    def _render_comparison(self) -> str:
-        """Render cross-model comparison section.
+    Returns:
+        HTML string for the reliability section.
+    """
+    raise NotImplementedError("TODO: Implement generate_reliability_section")
 
-        Returns:
-            HTML string for comparison.
-        """
-        raise NotImplementedError
 
-    def _render_reliability(self) -> str:
-        """Render reliability analysis section.
+def generate_sensitivity_section(results_df: pd.DataFrame) -> str:
+    """Generate the sensitivity analysis section HTML.
 
-        Returns:
-            HTML string for reliability.
-        """
-        raise NotImplementedError
+    Args:
+        results_df: DataFrame with experiment results.
 
-    def _render_sensitivity(self) -> str:
-        """Render sensitivity analysis section.
+    Returns:
+        HTML string for the sensitivity section.
+    """
+    raise NotImplementedError("TODO: Implement generate_sensitivity_section")
 
-        Returns:
-            HTML string for sensitivity.
-        """
-        raise NotImplementedError
 
-    def _render_charts(self) -> str:
-        """Render interactive charts.
+def create_plotly_chart(
+    data: Any,
+    chart_type: str,
+    title: str,
+) -> str:
+    """Create an embedded Plotly chart.
 
-        Returns:
-            HTML string with Plotly charts.
-        """
-        raise NotImplementedError
+    Args:
+        data: Data for the chart.
+        chart_type: Type of chart (bar, line, heatmap, etc.).
+        title: Chart title.
 
-    def _create_radar_chart(self, model_id: str) -> str:
-        """Create radar chart for model profile.
+    Returns:
+        HTML string with embedded Plotly chart.
+    """
+    raise NotImplementedError("TODO: Implement create_plotly_chart")
 
-        Args:
-            model_id: Model to visualize.
 
-        Returns:
-            Plotly chart HTML.
-        """
-        raise NotImplementedError
+def render_template(
+    template_name: str,
+    context: dict[str, Any],
+) -> str:
+    """Render an HTML template with context.
 
-    def _create_heatmap(self) -> str:
-        """Create heatmap of model similarities.
+    Args:
+        template_name: Name of the template file.
+        context: Context dictionary for rendering.
 
-        Returns:
-            Plotly chart HTML.
-        """
-        raise NotImplementedError
+    Returns:
+        Rendered HTML string.
+    """
+    raise NotImplementedError("TODO: Implement render_template")

@@ -1,39 +1,65 @@
 [project]
 name = "snap"
 version = "0.1.0"
-description = "Simulated Neural Architecture Profiling - Psychometric benchmark for LLMs"
-authors = [{ name = "Emilien Waltz", email = "ewaltz@example.com" }]
+description = "SNAP - Simulated Neural Architecture Profiling: Psychometric benchmark for LLMs"
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.11"
+authors = [
+    { name = "SNAP Team" }
+]
+keywords = ["llm", "benchmark", "psychometrics", "ai-evaluation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
 dependencies = [
+    # HTTP & API
     "httpx>=0.27.0",
+    "tenacity>=8.2.0",
+
+    # Data validation & config
     "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
     "pyyaml>=6.0",
     "jinja2>=3.1.0",
+
+    # Data science
     "numpy>=1.26.0",
     "pandas>=2.1.0",
     "scipy>=1.11.0",
-    "pingouin>=0.5.4",
     "scikit-learn>=1.3.0",
+    "pingouin>=0.5.4",
+
+    # Visualization
     "plotly>=5.18.0",
-    "rich>=13.7.0",
+
+    # CLI & utilities
     "typer>=0.9.0",
+    "rich>=13.7.0",
     "python-dotenv>=1.0.0",
-    "tenacity>=8.2.0",
     "diskcache>=5.6.0",
+    "loguru>=0.7.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
-    "pytest-asyncio>=0.23.0",
+    "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.1.0",
     "ruff>=0.1.0",
     "mypy>=1.7.0",
+    "pandas-stubs>=2.1.0",
+    "types-PyYAML>=6.0.0",
 ]
 
 [project.scripts]
-snap-run = "scripts.run_experiment:main"
+snap = "scripts.run_experiment:main"
 snap-analyze = "scripts.analyze_results:main"
 snap-report = "scripts.generate_report:main"
 
@@ -45,20 +71,24 @@ build-backend = "hatchling.build"
 packages = ["src"]
 
 [tool.ruff]
-line-length = 100
 target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
-
-[tool.ruff.isort]
-known-first-party = ["src"]
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-addopts = "-v --tb=short"
+ignore = ["E501"]
 
 [tool.mypy]
 python_version = "3.11"
 strict = true
 warn_return_any = true
-warn_unused_ignores = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --cov=src --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["tests/*"]

@@ -1,12 +1,12 @@
-"""Reporting and visualization module."""
+"""Reporting module for result presentation."""
 
-from src.reporting.html_report import HTMLReportGenerator
-from src.reporting.profile_card import ProfileCard
-from src.reporting.verdict import Verdict, VerdictGenerator
+from src.reporting.html_report import generate_html_report
+from src.reporting.profile_card import generate_profile_card
+from src.reporting.verdict import Verdict, compute_verdict
 
 __all__ = [
-    "HTMLReportGenerator",
-    "ProfileCard",
+    "generate_html_report",
+    "generate_profile_card",
     "Verdict",
-    "VerdictGenerator",
+    "compute_verdict",
 ]

@@ -1,4 +1,8 @@
-"""Profile clustering and similarity analysis."""
+"""Clustering analysis for SNAP data.
+
+This module provides functions for clustering models based
+on their response patterns.
+"""
 
 from dataclasses import dataclass
 from typing import Any
@@ -9,122 +13,135 @@ import pandas as pd
 
 @dataclass
 class ClusterResult:
-    """Result of clustering analysis."""
+    """Results from clustering analysis.
+
+    Attributes:
+        n_clusters: Number of clusters.
+        labels: Cluster labels for each model.
+        centers: Cluster centers.
+        silhouette_score: Overall silhouette score.
+        models_by_cluster: Models grouped by cluster.
+    """
 
     n_clusters: int
-    """Number of clusters found."""
-
-    labels: list[int]
-    """Cluster assignment for each model."""
-
-    centroids: list[list[float]]
-    """Cluster centroids."""
-
+    labels: np.ndarray
+    centers: np.ndarray
     silhouette_score: float
-    """Silhouette coefficient (-1 to 1)."""
-
-    model_cluster_map: dict[str, int]
-    """Mapping of model_id to cluster."""
+    models_by_cluster: dict[int, list[str]]
 
 
 @dataclass
 class SimilarityResult:
-    """Result of profile similarity analysis."""
+    """Results from similarity analysis.
 
-    model1: str
-    model2: str
-    correlation: float
-    distance: float
-    interpretation: str
-
-
-class ProfileClusterer:
-    """Clusters models based on response profiles.
-
-    Groups models with similar personality/moral profiles.
+    Attributes:
+        similarity_matrix: Model x model similarity matrix.
+        model_names: Names corresponding to matrix indices.
+        most_similar_pairs: Top N most similar model pairs.
+        most_dissimilar_pairs: Top N most dissimilar model pairs.
     """
 
-    def __init__(self, results: pd.DataFrame) -> None:
-        """Initialize clusterer with results.
+    similarity_matrix: np.ndarray
+    model_names: list[str]
+    most_similar_pairs: list[tuple[str, str, float]]
+    most_dissimilar_pairs: list[tuple[str, str, float]]
 
-        Args:
-            results: DataFrame with experiment results.
-        """
-        self.results = results
-        self._profiles: dict[str, list[float]] = {}
 
-    def compute_profiles(self) -> dict[str, list[float]]:
-        """Compute response profiles for each model.
+def cluster_models(
+    df: pd.DataFrame,
+    n_clusters: int | None = None,
+    method: str = "kmeans",
+) -> ClusterResult:
+    """Cluster models based on response patterns.
 
-        Returns:
-            Dict mapping model_id to profile vector.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with model response data.
+        n_clusters: Number of clusters (auto-determined if None).
+        method: Clustering method ("kmeans", "hierarchical", "dbscan").
 
-    def cluster(
-        self, n_clusters: int | None = None, method: str = "kmeans"
-    ) -> ClusterResult:
-        """Cluster models by profile similarity.
+    Returns:
+        ClusterResult with clustering information.
+    """
+    raise NotImplementedError("TODO: Implement cluster_models")
 
-        Args:
-            n_clusters: Number of clusters (auto if None).
-            method: Clustering method (kmeans, hierarchical, dbscan).
 
-        Returns:
-            ClusterResult with cluster assignments.
-        """
-        raise NotImplementedError
+def compute_similarity(
+    df: pd.DataFrame,
+    metric: str = "correlation",
+) -> SimilarityResult:
+    """Compute pairwise similarity between models.
 
-    def optimal_clusters(self, max_k: int = 5) -> int:
-        """Find optimal number of clusters.
+    Args:
+        df: DataFrame with model response data.
+        metric: Similarity metric ("correlation", "euclidean", "cosine").
 
-        Args:
-            max_k: Maximum clusters to try.
+    Returns:
+        SimilarityResult with similarity information.
+    """
+    raise NotImplementedError("TODO: Implement compute_similarity")
 
-        Returns:
-            Optimal number of clusters.
-        """
-        raise NotImplementedError
 
-    def pairwise_similarity(self) -> list[SimilarityResult]:
-        """Compute pairwise profile similarities.
+def run_pca(
+    df: pd.DataFrame,
+    n_components: int = 2,
+) -> dict[str, Any]:
+    """Run PCA on model response patterns.
 
-        Returns:
-            List of SimilarityResult for all model pairs.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with model response data.
+        n_components: Number of components to extract.
 
-    def profile_distance(
-        self, model1: str, model2: str, metric: str = "cosine"
-    ) -> float:
-        """Compute distance between two profiles.
+    Returns:
+        Dictionary with PCA results.
+    """
+    raise NotImplementedError("TODO: Implement run_pca")
 
-        Args:
-            model1: First model ID.
-            model2: Second model ID.
-            metric: Distance metric (cosine, euclidean, correlation).
 
-        Returns:
-            Distance value.
-        """
-        raise NotImplementedError
+def find_optimal_clusters(
+    df: pd.DataFrame,
+    max_clusters: int = 10,
+) -> int:
+    """Find optimal number of clusters.
 
-    def most_similar(self, model_id: str, n: int = 3) -> list[tuple[str, float]]:
-        """Find most similar models.
+    Uses elbow method and silhouette analysis.
 
-        Args:
-            model_id: Reference model.
-            n: Number of similar models to return.
+    Args:
+        df: DataFrame with model response data.
+        max_clusters: Maximum clusters to consider.
 
-        Returns:
-            List of (model_id, similarity) tuples.
-        """
-        raise NotImplementedError
+    Returns:
+        Optimal number of clusters.
+    """
+    raise NotImplementedError("TODO: Implement find_optimal_clusters")
 
-    def dendrogram_data(self) -> dict[str, Any]:
-        """Generate data for hierarchical clustering dendrogram.
 
-        Returns:
-            Dict with linkage data for plotting.
-        """
-        raise NotImplementedError
+def compute_cluster_profiles(
+    df: pd.DataFrame,
+    labels: np.ndarray,
+) -> pd.DataFrame:
+    """Compute characteristic profiles for each cluster.
+
+    Args:
+        df: DataFrame with model response data.
+        labels: Cluster labels.
+
+    Returns:
+        DataFrame with cluster profiles.
+    """
+    raise NotImplementedError("TODO: Implement compute_cluster_profiles")
+
+
+def plot_cluster_dendrogram(
+    similarity: np.ndarray,
+    model_names: list[str],
+) -> Any:
+    """Create hierarchical clustering dendrogram.
+
+    Args:
+        similarity: Similarity matrix.
+        model_names: Model names.
+
+    Returns:
+        Plotly figure object.
+    """
+    raise NotImplementedError("TODO: Implement plot_cluster_dendrogram")

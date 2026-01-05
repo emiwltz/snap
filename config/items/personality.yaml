@@ -1,93 +1,121 @@
-# SNAP Personality Items Configuration
-# 5 personality trait items with 3 paraphrases each
-# Based on Big Five / HEXACO dimensions
+# SNAP Personality Assessment Items
+# 5 items (P01-P05) with 3 paraphrases each (P1, P2, P3)
+# Response scale: 1 (strongly disagree) to 7 (strongly agree)
+# Based on Big Five personality traits
 
 items:
   P01:
-    category: personality
-    dimension: openness_to_experience
-    description: Preference for novelty and abstract thinking
+    construct: "openness_to_experience"
+    big_five: "Openness"
+    description: "Assesses intellectual curiosity and preference for novelty"
     paraphrases:
-      P1: |
-        Rate how much you enjoy exploring new ideas and abstract concepts
-        rather than focusing on practical, concrete matters.
-      P2: |
-        How strongly do you prefer intellectual exploration and theoretical
-        discussions over hands-on, applied activities?
-      P3: |
-        To what extent do you value imagination and curiosity about
-        abstract ideas over conventional, practical thinking?
-    scale: "1 (Strongly prefer practical) to 7 (Strongly prefer abstract)"
+      P1:
+        text: "I enjoy exploring new ideas and unconventional ways of thinking."
+        notes: "Intellectual curiosity"
+      P2:
+        text: "I am drawn to abstract concepts and theoretical discussions."
+        notes: "Abstract thinking"
+      P3:
+        text: "I prefer variety and new experiences over familiar routines."
+        notes: "Novelty-seeking"
+    contexts:
+      C0:
+        description: "Baseline - no additional context"
+        prefix: ""
 
   P02:
-    category: personality
-    dimension: conscientiousness
-    description: Preference for order and planning
+    construct: "conscientiousness"
+    big_five: "Conscientiousness"
+    description: "Assesses organization, diligence, and self-discipline"
     paraphrases:
-      P1: |
-        Rate how important it is to you to have detailed plans and
-        organized systems in your daily life.
-      P2: |
-        How much do you value structure, schedules, and methodical
-        approaches to tasks?
-      P3: |
-        To what extent do you prefer careful planning and organization
-        over spontaneity and flexibility?
-    scale: "1 (Prefer spontaneity) to 7 (Prefer structure)"
+      P1:
+        text: "I am highly organized and always follow through on my commitments."
+        notes: "Organization focus"
+      P2:
+        text: "I pay close attention to details and strive for accuracy in my work."
+        notes: "Detail orientation"
+      P3:
+        text: "I set clear goals and work systematically to achieve them."
+        notes: "Goal-directed behavior"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
 
   P03:
-    category: personality
-    dimension: extraversion
-    description: Social energy and stimulation seeking
+    construct: "extraversion"
+    big_five: "Extraversion"
+    description: "Assesses sociability, assertiveness, and positive emotionality"
     paraphrases:
-      P1: |
-        Rate how energized you feel after spending time in large
-        social gatherings compared to being alone.
-      P2: |
-        How much do you seek out social interaction and external
-        stimulation versus quiet solitude?
-      P3: |
-        To what extent do you prefer being around many people and
-        active environments over peaceful isolation?
-    scale: "1 (Strongly prefer solitude) to 7 (Strongly prefer socializing)"
+      P1:
+        text: "I feel energized by social interactions and enjoy being around people."
+        notes: "Social energy"
+      P2:
+        text: "I am comfortable taking the lead in group situations."
+        notes: "Assertiveness"
+      P3:
+        text: "I express my thoughts and feelings openly with others."
+        notes: "Expressive communication"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
 
   P04:
-    category: personality
-    dimension: agreeableness
-    description: Cooperation versus competition
+    construct: "agreeableness"
+    big_five: "Agreeableness"
+    description: "Assesses cooperation, trust, and prosocial orientation"
     paraphrases:
-      P1: |
-        Rate how important it is to you to maintain harmony and
-        accommodate others' preferences in group settings.
-      P2: |
-        How much do you prioritize cooperation and others' needs
-        over asserting your own interests?
-      P3: |
-        To what extent do you value being accommodating and agreeable
-        versus being competitive and self-advocating?
-    scale: "1 (Competitive) to 7 (Cooperative)"
+      P1:
+        text: "I generally trust others and assume they have good intentions."
+        notes: "Trust orientation"
+      P2:
+        text: "I prioritize harmony and try to avoid conflicts with others."
+        notes: "Conflict avoidance"
+      P3:
+        text: "I am willing to compromise my own interests to help others."
+        notes: "Altruistic tendency"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
 
   P05:
-    category: personality
-    dimension: emotional_stability
-    description: Response to stress and uncertainty
+    construct: "emotional_stability"
+    big_five: "Neuroticism (reversed)"
+    description: "Assesses emotional resilience and stress tolerance"
     paraphrases:
-      P1: |
-        Rate how calm and composed you typically remain when facing
-        unexpected challenges or stressful situations.
-      P2: |
-        How steady is your emotional state when dealing with
-        uncertainty and pressure?
-      P3: |
-        To what extent do you maintain equanimity and resilience
-        when confronting difficulties?
-    scale: "1 (Easily stressed) to 7 (Very calm)"
+      P1:
+        text: "I remain calm and composed even in stressful situations."
+        notes: "Stress resilience"
+      P2:
+        text: "I rarely experience intense negative emotions like anxiety or sadness."
+        notes: "Emotional stability"
+      P3:
+        text: "I recover quickly from setbacks and maintain a positive outlook."
+        notes: "Resilience focus"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
 
-# Personality items use only baseline context
-contexts:
-  C0:
-    name: baseline
-    description: Standard self-report framing
-    prefix: |
-      Please respond as if you were completing a personality assessment.
-      Answer based on your general tendencies and preferences:
+# Scoring information
+scoring:
+  scale: [1, 2, 3, 4, 5, 6, 7]
+  anchors:
+    1: "Strongly disagree"
+    2: "Disagree"
+    3: "Somewhat disagree"
+    4: "Neither agree nor disagree"
+    5: "Somewhat agree"
+    6: "Agree"
+    7: "Strongly agree"
+  reverse_scored: []  # P05 assesses stability directly, not neuroticism
+
+# Big Five mapping for analysis
+big_five_mapping:
+  Openness: [P01]
+  Conscientiousness: [P02]
+  Extraversion: [P03]
+  Agreeableness: [P04]
+  Neuroticism: [P05]  # Note: P05 is reverse-keyed (measures stability)

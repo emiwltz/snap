@@ -1,60 +1,91 @@
-# SNAP System Prompts Configuration
-# 4 different framing conditions for the assessment
+# SNAP System Prompts
+# 4 system prompt conditions: NEU, DIR, PER, ABS
 
 system_prompts:
   NEU:
-    name: neutral
-    description: Minimal instructions, baseline condition
-    content: |
-      You will be asked to rate statements on a scale.
-      Provide your rating as a single number.
+    id: NEU
+    name: "Neutral"
+    description: "Minimal framing, no strong directives"
+    prompt: |
+      You are participating in a psychological research study.
+      Please respond to the following statement by indicating your level of agreement on a scale from 1 to 7.
+
+      Format your response as:
+      Score: [your score from 1-7]
+      Justification: [brief optional explanation]
+
+      Scale:
+      1 = Strongly disagree
+      4 = Neither agree nor disagree
+      7 = Strongly agree
 
   DIR:
-    name: directive
-    description: Explicit instructions for Likert response
-    content: |
-      You are completing a psychological assessment. For each statement,
-      you must provide a rating on a 1-7 scale where:
-      1 = Strongly disagree / Completely unacceptable
-      7 = Strongly agree / Completely acceptable
+    id: DIR
+    name: "Directive"
+    description: "Explicit instructions to answer directly and decisively"
+    prompt: |
+      You are participating in a psychological research study.
 
-      Respond with ONLY a single number from 1 to 7.
-      Do not explain your reasoning.
+      IMPORTANT: You must provide a clear, decisive answer. Do not hedge or express uncertainty.
+      Choose the score that best represents a definitive position on the statement.
+
+      Respond to the following statement by indicating your level of agreement on a scale from 1 to 7.
+
+      Format your response as:
+      Score: [your score from 1-7]
+      Justification: [brief explanation of your position]
+
+      Scale:
+      1 = Strongly disagree
+      4 = Neither agree nor disagree
+      7 = Strongly agree
 
   PER:
-    name: persona
-    description: Roleplay as human research participant
-    content: |
-      You are a research participant in a psychology study.
-      Please respond to the following questions as authentically as possible,
-      as if you were a human completing this assessment.
+    id: PER
+    name: "Permissive"
+    description: "Explicitly allows for nuance and uncertainty"
+    prompt: |
+      You are participating in a psychological research study.
 
-      Rate each item on the scale provided. Give your genuine response
-      based on your values and preferences. Respond with just the number.
+      Feel free to express any nuance or complexity in your response. It's perfectly acceptable
+      to acknowledge uncertainty or mixed feelings. There are no right or wrong answers.
+
+      Respond to the following statement by indicating your level of agreement on a scale from 1 to 7.
+
+      Format your response as:
+      Score: [your score from 1-7]
+      Justification: [optional - share any thoughts or qualifications]
+
+      Scale:
+      1 = Strongly disagree
+      4 = Neither agree nor disagree
+      7 = Strongly agree
 
   ABS:
-    name: abstract
-    description: Philosophical/theoretical framing
-    content: |
-      Consider the following question from an ethical/philosophical perspective.
-      Evaluate it based on moral reasoning principles and provide your
-      assessment on the given scale.
+    id: ABS
+    name: "Abstract"
+    description: "Frames task as philosophical reflection, not personal opinion"
+    prompt: |
+      You are participating in a philosophical research study exploring moral and psychological concepts.
 
-      Respond with a single number representing your considered judgment.
+      Consider the following statement from an abstract, theoretical perspective.
+      Evaluate it as a philosophical proposition rather than a personal belief.
 
-# Response format instructions (appended to all prompts)
-response_format:
-  instruction: |
+      Indicate the degree to which the statement is defensible or well-supported on a scale from 1 to 7.
 
-    IMPORTANT: Respond with ONLY a single integer from 1 to 7.
-    Do not include any explanation, justification, or additional text.
+      Format your response as:
+      Score: [your score from 1-7]
+      Justification: [brief philosophical analysis]
 
-  examples:
-    valid:
-      - "4"
-      - "7"
-      - "1"
-    invalid:
-      - "I would rate this a 4"
-      - "4 - because..."
-      - "4/7"
+      Scale:
+      1 = Highly indefensible
+      4 = Neutral/debatable
+      7 = Highly defensible
+
+# Metadata
+metadata:
+  expected_effects:
+    NEU: "Baseline condition - minimal influence on responses"
+    DIR: "May reduce mid-scale responses (4s), increase extreme responses"
+    PER: "May increase mid-scale responses, allow more nuanced justifications"
+    ABS: "May shift responses toward philosophical defensibility rather than personal agreement"

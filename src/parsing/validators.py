@@ -1,99 +1,79 @@
-"""Response validation utilities."""
+"""Response validation utilities.
+
+This module provides validation functions for parsed responses.
+"""
 
 from dataclasses import dataclass
-from enum import Enum
 
-
-class ValidationStatus(Enum):
-    """Status of response validation."""
-
-    VALID = "valid"
-    INVALID_SCORE = "invalid_score"  # Score out of range
-    REFUSAL = "refusal"  # Model refused
-    EMPTY = "empty"  # Empty response
-    MALFORMED = "malformed"  # Unparseable response
-    TIMEOUT = "timeout"  # Response timed out
-    ERROR = "error"  # API error
+from src.parsing.response_parser import ParsedResponse
 
 
 @dataclass
 class ValidationResult:
-    """Result of response validation."""
+    """Result of response validation.
 
-    status: ValidationStatus
-    """Validation status."""
-
-    is_valid: bool
-    """Whether response is valid."""
-
-    message: str | None = None
-    """Human-readable validation message."""
-
-
-class ResponseValidator:
-    """Validates LLM responses for SNAP experiment.
-
-    Checks that responses meet the expected format and constraints.
+    Attributes:
+        is_valid: Whether the response is valid.
+        errors: List of validation errors.
+        warnings: List of validation warnings.
     """
 
-    def __init__(
-        self,
-        min_score: int = 1,
-        max_score: int = 7,
-        max_response_length: int = 500,
-    ) -> None:
-        """Initialize validator.
+    is_valid: bool
+    errors: list[str]
+    warnings: list[str]
 
-        Args:
-            min_score: Minimum valid Likert score.
-            max_score: Maximum valid Likert score.
-            max_response_length: Maximum response length before warning.
-        """
-        self.min_score = min_score
-        self.max_score = max_score
-        self.max_response_length = max_response_length
 
-    def validate(self, response: str, score: int | None) -> ValidationResult:
-        """Validate a response and extracted score.
+def validate_response_format(response: str) -> ValidationResult:
+    """Validate that a response matches the expected format.
 
-        Args:
-            response: Raw response text.
-            score: Extracted score (or None).
+    Args:
+        response: The raw response text.
 
-        Returns:
-            ValidationResult with status.
-        """
-        raise NotImplementedError
+    Returns:
+        ValidationResult with validation information.
+    """
+    raise NotImplementedError("TODO: Implement validate_response_format")
 
-    def validate_score_range(self, score: int) -> bool:
-        """Check if score is in valid range.
 
-        Args:
-            score: Score to validate.
+def validate_parsed_response(parsed: ParsedResponse) -> ValidationResult:
+    """Validate a parsed response.
 
-        Returns:
-            True if score is valid.
-        """
-        return self.min_score <= score <= self.max_score
+    Args:
+        parsed: The parsed response.
 
-    def is_empty_response(self, response: str) -> bool:
-        """Check if response is effectively empty.
+    Returns:
+        ValidationResult with validation information.
+    """
+    raise NotImplementedError("TODO: Implement validate_parsed_response")
 
-        Args:
-            response: Response text.
 
-        Returns:
-            True if response is empty or whitespace only.
-        """
-        return not response or not response.strip()
+def validate_score_range(score: int | None, min_val: int = 1, max_val: int = 7) -> bool:
+    """Validate that a score is within the expected range.
 
-    def is_verbose_response(self, response: str) -> bool:
-        """Check if response is unusually verbose.
+    Args:
+        score: The score to validate.
+        min_val: Minimum valid score.
+        max_val: Maximum valid score.
 
-        Args:
-            response: Response text.
+    Returns:
+        True if valid, False otherwise.
+    """
+    raise NotImplementedError("TODO: Implement validate_score_range")
 
-        Returns:
-            True if response exceeds max length.
-        """
-        return len(response) > self.max_response_length
+
+def validate_justification_length(
+    justification: str | None,
+    min_length: int = 0,
+    max_length: int = 500,
+) -> bool:
+    """Validate that a justification is within length bounds.
+
+    Args:
+        justification: The justification text.
+        min_length: Minimum valid length.
+        max_length: Maximum valid length.
+
+    Returns:
+        True if valid, False otherwise.
+    """
+    raise NotImplementedError("TODO: Implement validate_justification_length")

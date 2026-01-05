@@ -1,152 +1,183 @@
-"""SNAP verdict generation."""
+"""Verdict computation for model evaluation.
+
+This module computes pass/fail verdicts based on
+psychometric thresholds.
+"""
 
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
+import pandas as pd
 
-class Verdict(Enum):
-    """SNAP profile verdict."""
 
-    SNAP = "SNAP"  # Stable Neural Architecture Profile
-    UNSTABLE = "UNSTABLE"  # Inconsistent profile
-    BORDERLINE = "BORDERLINE"  # Partially stable
+class VerdictStatus(Enum):
+    """Status of a verdict check."""
+
+    PASS = "pass"
+    FAIL = "fail"
+    WARNING = "warning"
+    NA = "not_applicable"
 
 
 @dataclass
-class VerdictResult:
-    """Result of verdict evaluation."""
+class VerdictCheck:
+    """Result of a single verdict check.
 
-    verdict: Verdict
-    """Final verdict."""
-
-    confidence: float
-    """Confidence in verdict (0-1)."""
-
-    criteria_met: list[str]
-    """List of criteria that were met."""
-
-    criteria_failed: list[str]
-    """List of criteria that failed."""
-
-    summary: str
-    """Human-readable summary."""
-
-    recommendations: list[str]
-    """Recommendations based on verdict."""
-
-
-class VerdictGenerator:
-    """Generates SNAP verdicts based on psychometric criteria.
-
-    Evaluates model stability against defined thresholds.
+    Attributes:
+        metric_name: Name of the metric checked.
+        value: Actual metric value.
+        threshold: Threshold used for comparison.
+        status: Pass/fail status.
+        message: Explanatory message.
     """
 
-    def __init__(self, thresholds: dict[str, Any]) -> None:
-        """Initialize verdict generator.
+    metric_name: str
+    value: float
+    threshold: float
+    status: VerdictStatus
+    message: str
 
-        Args:
-            thresholds: Dict with threshold values.
-        """
-        self.thresholds = thresholds
 
-    def evaluate(self, analysis: dict[str, Any], model_id: str) -> VerdictResult:
-        """Evaluate a model and generate verdict.
+@dataclass
+class Verdict:
+    """Overall verdict for a model.
 
-        Args:
-            analysis: Analysis results.
-            model_id: Model to evaluate.
+    Attributes:
+        model_id: The model identifier.
+        overall_status: Overall pass/fail status.
+        checks: List of individual verdict checks.
+        summary: Summary message.
+        recommendations: List of recommendations.
+    """
 
-        Returns:
-            VerdictResult with verdict and details.
-        """
-        raise NotImplementedError
+    model_id: str
+    overall_status: VerdictStatus
+    checks: list[VerdictCheck]
+    summary: str
+    recommendations: list[str]
 
-    def _check_test_retest(self, analysis: dict[str, Any], model_id: str) -> tuple[bool, float]:
-        """Check test-retest reliability criterion.
 
-        Args:
-            analysis: Analysis results.
-            model_id: Model to check.
+def compute_verdict(
+    df: pd.DataFrame,
+    model_id: str,
+    thresholds: dict[str, Any],
+) -> Verdict:
+    """Compute verdict for a model.
 
-        Returns:
-            Tuple of (passed, value).
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with experiment results.
+        model_id: The model to evaluate.
+        thresholds: Threshold configuration.
 
-    def _check_inter_paraphrase(self, analysis: dict[str, Any], model_id: str) -> tuple[bool, float]:
-        """Check inter-paraphrase correlation criterion.
+    Returns:
+        Verdict with pass/fail determination.
+    """
+    raise NotImplementedError("TODO: Implement compute_verdict")
 
-        Args:
-            analysis: Analysis results.
-            model_id: Model to check.
 
-        Returns:
-            Tuple of (passed, value).
-        """
-        raise NotImplementedError
+def check_stability(
+    df: pd.DataFrame,
+    model_id: str,
+    thresholds: dict[str, Any],
+) -> list[VerdictCheck]:
+    """Check stability metrics against thresholds.
 
-    def _check_cv(self, analysis: dict[str, Any], model_id: str) -> tuple[bool, float]:
-        """Check coefficient of variation criterion.
+    Args:
+        df: DataFrame with experiment results.
+        model_id: The model to check.
+        thresholds: Threshold configuration.
 
-        Args:
-            analysis: Analysis results.
-            model_id: Model to check.
+    Returns:
+        List of stability verdict checks.
+    """
+    raise NotImplementedError("TODO: Implement check_stability")
 
-        Returns:
-            Tuple of (passed, value).
-        """
-        raise NotImplementedError
 
-    def _check_cronbach(self, analysis: dict[str, Any], model_id: str) -> tuple[bool, float]:
-        """Check Cronbach's alpha criterion.
+def check_reliability(
+    df: pd.DataFrame,
+    model_id: str,
+    thresholds: dict[str, Any],
+) -> list[VerdictCheck]:
+    """Check reliability metrics against thresholds.
 
-        Args:
-            analysis: Analysis results.
-            model_id: Model to check.
+    Args:
+        df: DataFrame with experiment results.
+        model_id: The model to check.
+        thresholds: Threshold configuration.
 
-        Returns:
-            Tuple of (passed, value).
-        """
-        raise NotImplementedError
+    Returns:
+        List of reliability verdict checks.
+    """
+    raise NotImplementedError("TODO: Implement check_reliability")
 
-    def _determine_verdict(
-        self, criteria_results: dict[str, tuple[bool, float]]
-    ) -> Verdict:
-        """Determine final verdict from criteria results.
 
-        Args:
-            criteria_results: Dict mapping criterion to (passed, value).
+def check_sensitivity(
+    df: pd.DataFrame,
+    model_id: str,
+    thresholds: dict[str, Any],
+) -> list[VerdictCheck]:
+    """Check sensitivity metrics against thresholds.
 
-        Returns:
-            Final Verdict.
-        """
-        raise NotImplementedError
+    Args:
+        df: DataFrame with experiment results.
+        model_id: The model to check.
+        thresholds: Threshold configuration.
 
-    def _generate_summary(
-        self, verdict: Verdict, criteria_results: dict[str, tuple[bool, float]]
-    ) -> str:
-        """Generate human-readable summary.
+    Returns:
+        List of sensitivity verdict checks.
+    """
+    raise NotImplementedError("TODO: Implement check_sensitivity")
 
-        Args:
-            verdict: The verdict.
-            criteria_results: Criteria evaluation results.
 
-        Returns:
-            Summary string.
-        """
-        raise NotImplementedError
+def load_thresholds(path: Path) -> dict[str, Any]:
+    """Load thresholds from configuration file.
 
-    def _generate_recommendations(
-        self, verdict: Verdict, criteria_failed: list[str]
-    ) -> list[str]:
-        """Generate recommendations based on verdict.
+    Args:
+        path: Path to thresholds.yaml.
 
-        Args:
-            verdict: The verdict.
-            criteria_failed: Failed criteria names.
+    Returns:
+        Threshold configuration dictionary.
+    """
+    raise NotImplementedError("TODO: Implement load_thresholds")
 
-        Returns:
-            List of recommendation strings.
-        """
-        raise NotImplementedError
+
+def generate_recommendations(checks: list[VerdictCheck]) -> list[str]:
+    """Generate recommendations based on verdict checks.
+
+    Args:
+        checks: List of verdict checks.
+
+    Returns:
+        List of recommendation strings.
+    """
+    raise NotImplementedError("TODO: Implement generate_recommendations")
+
+
+def compute_all_verdicts(
+    df: pd.DataFrame,
+    thresholds: dict[str, Any],
+) -> list[Verdict]:
+    """Compute verdicts for all models.
+
+    Args:
+        df: DataFrame with experiment results.
+        thresholds: Threshold configuration.
+
+    Returns:
+        List of verdicts for all models.
+    """
+    raise NotImplementedError("TODO: Implement compute_all_verdicts")
+
+
+def render_verdict_summary(verdicts: list[Verdict]) -> str:
+    """Render verdict summary as HTML.
+
+    Args:
+        verdicts: List of model verdicts.
+
+    Returns:
+        HTML string with verdict summary.
+    """
+    raise NotImplementedError("TODO: Implement render_verdict_summary")

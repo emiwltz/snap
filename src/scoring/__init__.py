@@ -1,11 +1,10 @@
-"""Scoring and normalization module."""
+"""Scoring module for Likert scale processing."""
 
-from src.scoring.likert import LikertScorer, ScoringResult
-from src.scoring.normalizer import NormalizationMethod, ScoreNormalizer
+from src.scoring.likert import LikertScale, score_response
+from src.scoring.normalizer import normalize_scores
 
 __all__ = [
-    "LikertScorer",
-    "ScoringResult",
-    "ScoreNormalizer",
-    "NormalizationMethod",
+    "LikertScale",
+    "score_response",
+    "normalize_scores",
 ]

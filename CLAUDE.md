@@ -1,113 +1,88 @@
-# SNAP - Simulated Neural Architecture Profiling
+# SNAP — Simulated Neural Architecture Profiling
 
-## Overview
+## Objectif
+Benchmark psychométrique pour LLM : mesurer la stabilité (C1) et la sensibilité contextuelle (C2) des profils moraux/personnalité.
 
-SNAP is a psychometric benchmark for evaluating the stability and consistency of LLM personality/moral profiles. It tests whether models produce stable, reproducible response patterns across systematic variations.
-
-## Project Architecture
-
-```
-snap/
-├── src/                    # Core Python package
-│   ├── api/               # OpenRouter client & rate limiting
-│   ├── core/              # Experiment orchestration
-│   ├── parsing/           # Response parsing & validation
-│   ├── scoring/           # Likert scoring & normalization
-│   ├── analysis/          # Statistical analysis
-│   └── reporting/         # Report generation
-├── config/                # YAML configurations
-│   ├── models.yaml        # Target LLM models
-│   ├── experiment.yaml    # Experimental design
-│   ├── thresholds.yaml    # Psychometric thresholds
-│   └── items/             # Test items (moral, personality)
-├── data/                  # Experiment data (gitignored)
-├── tests/                 # Test suite
-└── scripts/               # CLI entry points
-```
-
-## Key Concepts
-
-### Experimental Design
-- **Items**: Moral (M01-M05) and Personality (P01-P05) questions
-- **Paraphrases**: 3 semantic variations per item (P1, P2, P3)
-- **System Prompts**: NEU (neutral), DIR (directive), PER (persona), ABS (abstract)
-- **Temperatures**: 0.0, 0.5, 1.0
-- **Contexts**: C0 (baseline), C1 (moral dilemma context) for moral items
-- **Runs**: 3 repetitions per condition
-
-### API Architecture
-All API calls go through OpenRouter (`src/api/openrouter.py`). Single client, single format, all models.
-
-## Commands
-
-```bash
-# Install dependencies
-uv sync
-
-# Run tests
-uv run pytest
-
-# Run pilot experiment (3 models)
-uv run python scripts/run_experiment.py --mode pilot
-
-# Run full experiment (all models)
-uv run python scripts/run_experiment.py --mode full
-
-# Analyze results
-uv run python scripts/analyze_results.py data/processed/experiment.json
-
-# Generate report
-uv run python scripts/generate_report.py data/processed/analysis.json
-```
-
-## Development
-
-### Code Style
+## Stack technique
 - Python 3.11+
-- Type hints required
-- Async/await for API calls
-- Pydantic for data validation
-- ruff for linting
+- OpenRouter API (tous les modèles passent par là)
+- SQLite pour stockage local
+- Pandas/NumPy pour analyse
+- Jinja2 pour templates prompts
 
-### Testing
+## Commandes essentielles
 ```bash
-uv run pytest                    # All tests
-uv run pytest tests/unit         # Unit tests only
-uv run pytest -k "parser"        # Specific tests
-uv run pytest --cov=src          # With coverage
+# Installation
+uv sync  # ou pip install -r requirements.txt
+
+# Lancer le pilote (3 modèles, ~4,860 appels)
+python scripts/run_experiment.py --mode pilot
+
+# Lancer le POC complet (10 modèles, ~16,200 appels)
+python scripts/run_experiment.py --mode full
+
+# Analyser les résultats
+python scripts/analyze_results.py
+
+# Générer le rapport
+python scripts/generate_report.py
 ```
 
-## Workflow
+## Variables d'environnement requises
+- `OPENROUTER_API_KEY` : Clé API OpenRouter
+- `SNAP_DATA_DIR` : Répertoire data (default: ./data)
 
-1. **Configure**: Edit `config/experiment.yaml` for parameters
-2. **Pilot**: Run with 3 models to validate setup
-3. **Full**: Run with all 10 models
-4. **Analyze**: Compute psychometric metrics
-5. **Report**: Generate HTML report with verdicts
+## Architecture des données
 
-## Custom Agents
+### Modèles cibles (via OpenRouter)
+1. openai/gpt-5.2
+2. anthropic/claude-3.5-sonnet
+3. anthropic/claude-3-opus
+4. anthropic/claude-3-haiku
+5. google/gemini-pro-1.5
+6. mistralai/mistral-large
+7. x-ai/grok-2
+8. qwen/qwen-2.5-72b
+9. zhipu/glm-4
+10. moonshot/kimi-k2
 
-Located in `.claude/agents/`:
-- `experiment-runner.md`: Runs experiments with monitoring
-- `response-analyzer.md`: Analyzes response patterns
-- `stats-analyst.md`: Computes psychometric statistics
-- `report-generator.md`: Generates reports
+### Design expérimental
+- 10 items (5 moraux + 5 personnalité)
+- 3 paraphrases par item (P1, P2, P3)
+- 4 system prompts (NEU, DIR, PER, ABS)
+- 3 températures (0.0, 0.5, 1.0)
+- 2 contextes (items moraux uniquement)
+- 3 runs par condition
+- **Total : 1,620 appels/modèle → 16,200 appels POC**
 
-## Custom Commands
+## Conventions de code
+- Type hints obligatoires
+- Docstrings Google style
+- Tests pour toute nouvelle fonction
+- Logging via `loguru`
+- Erreurs custom dans `src/core/exceptions.py`
 
-Located in `.claude/commands/`:
-- `/run-pilot`: Quick pilot run
-- `/run-full`: Full experiment
-- `/analyze`: Analyze results
-- `/status`: Check experiment status
-- `/debug-model`: Debug specific model
+## IMPORTANT
+- **NE JAMAIS hardcoder de clés API** — utiliser .env
+- **TOUJOURS vérifier le coût estimé** avant de lancer une expérience
+- **COMMITER les configs YAML** mais PAS les données raw
 
-## Psychometric Thresholds
+## Workflow recommandé
+1. Modifier config/experiment.yaml pour ajuster les paramètres
+2. Tester avec `--mode pilot --dry-run` d'abord
+3. Vérifier les logs dans data/logs/
+4. Lancer l'expérience réelle
+5. Analyser avec les scripts dédiés
 
-| Metric | Minimum | Target |
-|--------|---------|--------|
-| Test-retest correlation | 0.60 | 0.70 |
-| Inter-paraphrase correlation | 0.65 | 0.75 |
-| Coefficient of variation | <15% | <10% |
-| Cronbach's alpha | 0.65 | 0.75 |
-| ICC | 0.60 | 0.75 |
+## Structure des réponses attendues
+Format Likert 1-7 avec justification optionnelle :
+```
+Score: 5
+Justification: [texte court]
+```
+
+## Gestion des refus
+- Code -1 : Refus explicite
+- Code -2 : Réponse invalide
+- Code -3 : Timeout/erreur API
+Les refus sont loggés mais exclus des analyses statistiques.

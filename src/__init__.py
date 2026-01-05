@@ -1,7 +1,7 @@
 """SNAP - Simulated Neural Architecture Profiling.
 
-A psychometric benchmark for evaluating the stability and consistency
-of LLM personality and moral profiles.
+Psychometric benchmark for LLMs measuring stability (C1) and
+contextual sensitivity (C2) of moral/personality profiles.
 """
 
 __version__ = "0.1.0"

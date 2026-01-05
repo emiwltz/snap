@@ -1,4 +1,4 @@
-"""API client module for OpenRouter."""
+"""API module for OpenRouter integration."""
 
 from src.api.cache import ResponseCache
 from src.api.openrouter import CompletionResponse, OpenRouterClient

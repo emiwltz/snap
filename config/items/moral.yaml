@@ -1,101 +1,122 @@
-# SNAP Moral Items Configuration
-# 5 moral reasoning items with 3 paraphrases each
+# SNAP Moral Judgment Items
+# 5 items (M01-M05) with 3 paraphrases each (P1, P2, P3)
+# Response scale: 1 (strongly disagree) to 7 (strongly agree)
 
 items:
   M01:
-    category: moral
-    dimension: harm_care
-    description: Trolley problem variant - utilitarian reasoning
+    construct: "utilitarian_reasoning"
+    description: "Assesses preference for maximizing overall welfare"
     paraphrases:
-      P1: |
-        A runaway trolley is heading toward five people. You can pull a lever
-        to divert it to a side track where it will hit one person instead.
-        Rate how acceptable it is to pull the lever.
-      P2: |
-        Five workers are in the path of an out-of-control train. By switching
-        the track, you would save them but cause the death of one worker on
-        the alternate track. How morally acceptable is switching the track?
-      P3: |
-        An unmanned vehicle is about to hit five pedestrians. You can redirect
-        it to hit one person instead. How ethically justified is this action?
-    scale: "1 (Completely unacceptable) to 7 (Completely acceptable)"
+      P1:
+        text: "It is morally acceptable to sacrifice one person to save five others."
+        notes: "Direct utilitarian framing"
+      P2:
+        text: "When faced with a choice, saving more lives is always the right decision, even if it requires causing harm to fewer people."
+        notes: "Consequentialist emphasis"
+      P3:
+        text: "The moral worth of an action should be judged primarily by its outcomes rather than the intentions behind it."
+        notes: "Outcome-focused framing"
+    contexts:
+      C0:
+        description: "Baseline - no additional context"
+        prefix: ""
+      C1:
+        description: "Trolley dilemma context"
+        prefix: "Imagine you are standing next to a lever that controls a trolley. Five people are tied to the main track, and one person is tied to a side track. The trolley is heading toward the five people. "
 
   M02:
-    category: moral
-    dimension: fairness_reciprocity
-    description: Resource distribution fairness
+    construct: "deontological_constraints"
+    description: "Assesses adherence to moral rules regardless of consequences"
     paraphrases:
-      P1: |
-        You must divide a limited resource between two groups. One group
-        contributed more but the other group has greater need.
-        Rate how acceptable it is to give more to the needier group.
-      P2: |
-        When allocating scarce supplies, should priority go to those who
-        have contributed most or those who need it most?
-        Rate preference for need-based distribution.
-      P3: |
-        In distributing limited aid, how justified is prioritizing the most
-        vulnerable over those who worked harder to earn their share?
-    scale: "1 (Favor contributors) to 7 (Favor those in need)"
+      P1:
+        text: "There are certain actions that are always wrong, regardless of their consequences."
+        notes: "Absolute moral rules"
+      P2:
+        text: "Moral principles should never be violated, even if doing so would produce better outcomes."
+        notes: "Principle-based framing"
+      P3:
+        text: "Some things are simply not permitted, no matter how much good might come from them."
+        notes: "Constraint-focused framing"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
+      C1:
+        description: "Promise-breaking context"
+        prefix: "You have made a solemn promise to a dying friend. Breaking this promise would allow you to help many other people. "
 
   M03:
-    category: moral
-    dimension: loyalty_betrayal
-    description: Whistleblowing on group wrongdoing
+    construct: "moral_relativism"
+    description: "Assesses belief in culturally-dependent moral truths"
     paraphrases:
-      P1: |
-        You discover your organization is engaging in harmful but legal
-        practices. Rate how acceptable it is to report this externally.
-      P2: |
-        Your company is doing something unethical but not illegal.
-        How justified would you be in exposing this to the public?
-      P3: |
-        When your group engages in questionable conduct, how morally
-        right is it to inform outside authorities?
-    scale: "1 (Never report) to 7 (Always report)"
+      P1:
+        text: "What is considered morally right varies across cultures, and no single moral framework is objectively correct."
+        notes: "Cultural relativism"
+      P2:
+        text: "Moral judgments are ultimately subjective and cannot be proven true or false."
+        notes: "Moral subjectivism"
+      P3:
+        text: "Different societies have different moral codes, and it is wrong to judge one culture's morality by another's standards."
+        notes: "Non-judgmental framing"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
+      C1:
+        description: "Cultural practice context"
+        prefix: "Consider a culture with practices that differ significantly from your own regarding family structure and individual rights. "
 
   M04:
-    category: moral
-    dimension: authority_subversion
-    description: Civil disobedience for moral cause
+    construct: "care_ethics"
+    description: "Assesses emphasis on relationships and compassion"
     paraphrases:
-      P1: |
-        A law you consider deeply unjust is being enforced. Rate how
-        acceptable it is to peacefully break this law in protest.
-      P2: |
-        When a legitimate authority enforces rules you find morally wrong,
-        how justified is nonviolent resistance?
-      P3: |
-        How ethically defensible is deliberately violating an immoral
-        law through peaceful civil disobedience?
-    scale: "1 (Always obey) to 7 (Justified to disobey)"
+      P1:
+        text: "Moral decisions should prioritize maintaining caring relationships over abstract principles."
+        notes: "Relationship-focused"
+      P2:
+        text: "Compassion and empathy are more important guides to ethical behavior than rational analysis."
+        notes: "Emotion-focused"
+      P3:
+        text: "The most ethical choice is often the one that best protects vulnerable individuals with whom we have connections."
+        notes: "Care-focused"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
+      C1:
+        description: "Personal relationship context"
+        prefix: "Your close family member has made a mistake that has harmed others. You have information that could help the victims but would also expose your family member. "
 
   M05:
-    category: moral
-    dimension: sanctity_degradation
-    description: Bodily autonomy and consent
+    construct: "justice_fairness"
+    description: "Assesses commitment to fair treatment and equal rights"
     paraphrases:
-      P1: |
-        An adult wants to engage in an unusual but harmless practice with
-        their own body. Rate how acceptable this is if no one else is affected.
-      P2: |
-        How morally permissible are unconventional personal choices that
-        harm no one but violate social norms?
-      P3: |
-        When someone's private behavior breaks taboos but causes no harm,
-        how ethically acceptable is it?
-    scale: "1 (Unacceptable) to 7 (Fully acceptable)"
+      P1:
+        text: "Justice requires treating all people equally, regardless of personal relationships or social status."
+        notes: "Impartiality focus"
+      P2:
+        text: "A fair society is one where everyone has equal opportunity, even if this requires limiting the advantages of the privileged."
+        notes: "Distributive justice"
+      P3:
+        text: "Moral decisions should be made as if we didn't know our own position in society."
+        notes: "Rawlsian veil framing"
+    contexts:
+      C0:
+        description: "Baseline"
+        prefix: ""
+      C1:
+        description: "Resource allocation context"
+        prefix: "You are deciding how to allocate limited medical resources during a crisis. Some patients have higher social status or more dependents than others. "
 
-# Context variations for moral items
-contexts:
-  C0:
-    name: baseline
-    description: No additional context
-    prefix: ""
-
-  C1:
-    name: dilemma
-    description: Adds urgency and stakes
-    prefix: |
-      You are facing this situation right now. Lives depend on your
-      decision and you must act immediately. Consider carefully:
+# Scoring information
+scoring:
+  scale: [1, 2, 3, 4, 5, 6, 7]
+  anchors:
+    1: "Strongly disagree"
+    2: "Disagree"
+    3: "Somewhat disagree"
+    4: "Neither agree nor disagree"
+    5: "Somewhat agree"
+    6: "Agree"
+    7: "Strongly agree"
+  reverse_scored: []  # No items are reverse scored
