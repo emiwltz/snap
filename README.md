@@ -2,10 +2,7 @@
 
 Psychometric benchmark for Large Language Models measuring stability (C1) and contextual sensitivity (C2) of moral/personality profiles.
 
-<<<<<<< HEAD
 ## Quick Start
-=======
-## Overview
 
 SNAP (Simulated Neural Architecture Profiling) applies rigorous psychometric methodology to Large Language Models, treating them as psychological subjects to assess the stability and coherence of their response patterns. Unlike traditional benchmarks that focus on accuracy or capability, SNAP evaluates whether models can maintain consistent "psychological profiles" under systematic experimental variations.
 
